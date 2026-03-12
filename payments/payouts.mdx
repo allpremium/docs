@@ -36,16 +36,10 @@ Payout requests must be signed with HMAC-SHA256. Two additional headers are requ
 
 ### Computing the signature
 
-```javascript Node.jsap
+```javascript Node.js
 const crypto = require('crypto');
 
-// Step 1 — derive your per-client signing secret (do this once, cache the result)
-const clientSecret = crypto
-  .createHmac('sha256', master_secret)
-  .update(`${consumer_uuid}:${api_key}`)
-  .digest('hex');
-
-// Step 2 — build the payload for each request
+// Build the payload
 const timestamp = Math.floor(Date.now() / 1000).toString();
 const method    = 'POST';
 const path      = '/v1/bus/pay';
@@ -53,9 +47,9 @@ const bodyStr   = JSON.stringify(requestBody);
 const bodyHash  = crypto.createHash('sha256').update(bodyStr, 'utf8').digest('hex');
 const payload   = timestamp + method + path + bodyHash;
 
-// Step 3 — sign
+// Sign with your master_secret (emailed to you on onboarding)
 const signature = crypto
-  .createHmac('sha256', clientSecret)
+  .createHmac('sha256', master_secret)
   .update(payload)
   .digest('hex');
 ```
@@ -63,12 +57,7 @@ const signature = crypto
 ```python Python
 import hashlib, hmac, json, time
 
-# Step 1 — derive your per-client signing secret
-client_secret = hmac.new(
-    master_secret.encode(), f"{consumer_uuid}:{api_key}".encode(), hashlib.sha256
-).hexdigest()
-
-# Step 2 — build the payload
+# Build the payload
 timestamp  = str(int(time.time()))
 method     = "POST"
 path       = "/v1/bus/pay"
@@ -76,9 +65,9 @@ body_str   = json.dumps(request_body, separators=(',', ':'))
 body_hash  = hashlib.sha256(body_str.encode()).hexdigest()
 payload    = timestamp + method + path + body_hash
 
-# Step 3 — sign
+# Sign with your master_secret (emailed to you on onboarding)
 signature = hmac.new(
-    client_secret.encode(), payload.encode(), hashlib.sha256
+    master_secret.encode(), payload.encode(), hashlib.sha256
 ).hexdigest()
 ```
 
