@@ -5,11 +5,13 @@ description: "Top up a mobile number with airtime."
 
 The request first checks that your account has sufficient balance. If successful, an order is placed. A [callback URL](/callback) is required to receive the final status; you can also poll the [status](/airtime/status) endpoint.
 
-**POST** `/v1/bus/order/{service}`
+**POST** `/v1/bus/order/airtime`
 
 ---
 
 ## Services
+
+Pass the service name in the `service` field of the request body.
 
 | Service | Description |
 |---------|-------------|
@@ -25,21 +27,26 @@ The request first checks that your account has sufficient balance. If successful
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.tupay.africa/v1/bus/order/safaricom \
+curl -X POST https://api.tupay.africa/v1/bus/order \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer {token}' \
   -d '{
-    "account":   "0733000000",
-    "amount":    10,
-    "currency":  "KES",
-    "reference": "ref1234",
-    "name":      "John",
-    "phone":     "254722000000",
-    "shortcode": "100100",
-    "idempotencyKey": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    "service":       "safaricom",
+    "account":       "0733000000",
+    "amount":        10,
+    "currency":      "KES",
+    "reference":     "ref1234",
+    "idempotencyKey": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "name":          "John",
+    "phone":         "254722000000",
+    "shortcode":     "100100"
   }'
 ```
 </RequestExample>
+
+<ParamField body="service" type="string" required>
+  Airtime service identifier — see [Services](#services) above.
+</ParamField>
 
 <ParamField body="account" type="string" required>
   Recipient phone number.
@@ -55,6 +62,10 @@ curl -X POST https://api.tupay.africa/v1/bus/order/safaricom \
 
 <ParamField body="reference" type="string">
   Your internal reference.
+</ParamField>
+
+<ParamField body="idempotencyKey" type="string">
+  Unique UUID per request — prevents duplicate orders on retry.
 </ParamField>
 
 <ParamField body="name" type="string">
