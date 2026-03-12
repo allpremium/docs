@@ -31,12 +31,12 @@ Payout requests must be signed with HMAC-SHA256. Two additional headers are requ
 
 | Header | Description |
 |--------|-------------|
-| `X-Tupay-Timestamp` | Current Unix time in **seconds** (e.g. `1709200000`). Requests older than 5 minutes are rejected. |
-| `X-Tupay-Signature` | HMAC-SHA256 signature — see computation below. |
+| `X-Api-Timestamp` | Current Unix time in **seconds** (e.g. `1709200000`). Requests older than 5 minutes are rejected. |
+| `X-Api-Signature` | HMAC-SHA256 signature — see computation below. |
 
 ### Computing the signature
 
-```javascript Node.js
+```javascript Node.jsap
 const crypto = require('crypto');
 
 // Step 1 — derive your per-client signing secret (do this once, cache the result)
@@ -95,8 +95,8 @@ signature = hmac.new(
 curl -X POST https://api.tupay.africa/v1/bus/pay \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer {token}' \
-  -H 'X-Tupay-Timestamp: {unix_seconds}' \
-  -H 'X-Tupay-Signature: {signature}' \
+  -H 'X-Api-Timestamp: {unix_seconds}' \
+  -H 'X-Api-Signature: {signature}' \
   -d '{
     "service":        "mpesa",
     "account":        "0733000000",
@@ -189,7 +189,7 @@ curl -X POST https://api.tupay.africa/v1/bus/pay \
 
 | HTTP | Reason |
 |------|--------|
-| `400` | Missing required field (`service`, `account`, `amount`, `currency`) or invalid `X-Tupay-Timestamp` |
+| `400` | Missing required field (`service`, `account`, `amount`, `currency`) or invalid `X-Api-Timestamp` |
 | `403` | Missing HMAC headers, invalid signature, timestamp outside ±5 minute window, or IP not whitelisted |
 | `409` | Duplicate request — same `idempotencyKey` already processed. Use a new UUID to retry. |
 | `402` | Insufficient balance |

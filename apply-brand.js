@@ -54,6 +54,7 @@ const urlMap = [
     ['https://tupay.africa/dashboard/settings', brand.apiKeysUrl],
     ['https://tupay.africa/dashboard',          brand.dashboardUrl],
     ['https://tupay.africa',                    brand.website],
+    ['Tupay',                                   brand.name],
 ];
 
 function patchDir(dir) {

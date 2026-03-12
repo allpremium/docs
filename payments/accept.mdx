@@ -129,8 +129,8 @@ signature    = HMAC-SHA256(clientSecret,  timestamp + "POST" + "/v1/bus/create" 
 | Header | Description |
 |--------|-------------|
 | `Authorization` | `Bearer {access_token}` from `POST /v1/bus/token` |
-| `X-Tupay-Timestamp` | Unix timestamp in seconds — must be within ±5 minutes of server time |
-| `X-Tupay-Signature` | HMAC-SHA256 signature as described above |
+| `X-Api-Timestamp` | Unix timestamp in seconds — must be within ±5 minutes of server time |
+| `X-Api-Signature` | HMAC-SHA256 signature as described above |
 
 <RequestExample>
 ```bash cURL
@@ -144,8 +144,8 @@ SIGNATURE=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$CLIENT_SECRET" -he
 curl -X POST https://api.tupay.africa/v1/bus/create \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer {access_token}" \
-  -H "X-Tupay-Timestamp: $TIMESTAMP" \
-  -H "X-Tupay-Signature: $SIGNATURE" \
+  -H "X-Api-Timestamp: $TIMESTAMP" \
+  -H "X-Api-Signature: $SIGNATURE" \
   -d "$BODY"
 ```
 </RequestExample>
