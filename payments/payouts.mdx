@@ -27,7 +27,7 @@ Pass the service name in the `service` field of the request body.
 
 ## Request signing
 
-Payout requests must be signed with HMAC-SHA256. Two additional headers are required on every call:
+Payout requests must be signed with HMAC-SHA256 using your [`signing_secret`](/prerequisites/authorization#signing-secret). Two additional headers are required on every call:
 
 | Header | Description |
 |--------|-------------|
@@ -35,6 +35,10 @@ Payout requests must be signed with HMAC-SHA256. Two additional headers are requ
 | `X-Api-Signature` | HMAC-SHA256 signature — see computation below. |
 
 ### Computing the signature
+
+```
+signature = HMAC-SHA256(signing_secret, timestamp + "POST" + "/v1/bus/pay" + SHA-256(body))
+```
 
 ```javascript Node.js
 const crypto = require('crypto');

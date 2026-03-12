@@ -113,7 +113,7 @@ curl -X POST https://api.tupay.africa/v1/bus/create \
 
 ## Backend API (authenticated + HMAC)
 
-Use this mode for server-to-server calls. Obtain a Bearer token first (see [Authorization](/prerequisites/authorization)), then sign every request using HMAC-SHA256.
+Use this mode for server-to-server calls. Obtain a Bearer token first (see [Authorization](/prerequisites/authorization)), then sign every request using your [`signing_secret`](/prerequisites/authorization#signing-secret) with HMAC-SHA256.
 
 The signing algorithm is identical to [Payouts](/payments/payouts#request-signing) — the same signing helper works for both endpoints.
 
