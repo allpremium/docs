@@ -120,7 +120,7 @@ The signing algorithm is identical to [Payouts](/payments/payouts#request-signin
 ### Signature
 
 ```
-signature = HMAC-SHA256(master_secret, timestamp + "POST" + "/v1/bus/create" + SHA-256(body))
+signature = HMAC-SHA256(signing_secret, timestamp + "POST" + "/v1/bus/create" + SHA-256(body))
 ```
 
 **Required headers:**
@@ -137,7 +137,7 @@ TIMESTAMP=$(date +%s)
 BODY='{"name":"ShortName","phone":"254722000000","service":"mpesa","idempotencyKey":"f47ac10b-58cc-4372-a567-0e02b2c3d479","payables":[{"account":"0733000000","currency":"KES","amount":500}]}'
 BODY_HASH=$(echo -n "$BODY" | sha256sum | cut -d' ' -f1)
 PAYLOAD="${TIMESTAMP}POST/v1/bus/create${BODY_HASH}"
-SIGNATURE=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$MASTER_SECRET" -hex | cut -d' ' -f2)
+SIGNATURE=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$SIGNING_SECRET" -hex | cut -d' ' -f2)
 
 curl -X POST https://api.tupay.africa/v1/bus/create \
   -H "Content-Type: application/json" \

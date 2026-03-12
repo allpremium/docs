@@ -47,9 +47,9 @@ const bodyStr   = JSON.stringify(requestBody);
 const bodyHash  = crypto.createHash('sha256').update(bodyStr, 'utf8').digest('hex');
 const payload   = timestamp + method + path + bodyHash;
 
-// Sign with your master_secret (emailed to you on onboarding)
+// Sign with your signing_secret (emailed to you on onboarding)
 const signature = crypto
-  .createHmac('sha256', master_secret)
+  .createHmac('sha256', signing_secret)
   .update(payload)
   .digest('hex');
 ```
@@ -65,9 +65,9 @@ body_str   = json.dumps(request_body, separators=(',', ':'))
 body_hash  = hashlib.sha256(body_str.encode()).hexdigest()
 payload    = timestamp + method + path + body_hash
 
-# Sign with your master_secret (emailed to you on onboarding)
+# Sign with your signing_secret (emailed to you on onboarding)
 signature = hmac.new(
-    master_secret.encode(), payload.encode(), hashlib.sha256
+    signing_secret.encode(), payload.encode(), hashlib.sha256
 ).hexdigest()
 ```
 

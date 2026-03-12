@@ -59,7 +59,7 @@ curl -X POST https://api.tupay.africa/v1/bus/token \
 ## Signing secret
 
 Certain endpoints (payouts, payment creation) require request signing in addition to a Bearer token.
-Your **signing secret** (`master_secret`) is emailed to you during onboarding and again whenever you rotate your API key. It is not shown in the dashboard.
+Your **signing secret** (`signing_secret`) is emailed to you during onboarding and whenever you rotate your API key. It is not shown in the dashboard.
 
 <Warning>
   Keep your signing secret as secure as your API key — never expose it in client-side code, logs, or version control.
