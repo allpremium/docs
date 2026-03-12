@@ -1,4 +1,5 @@
 {
+  "$schema": "https://mintlify.com/docs.json",
   "name": "Tupay",
   "logo": {
     "dark": "/logo/dark.svg",
@@ -11,15 +12,17 @@
     "light": "#689DF0",
     "dark": "#1238A0"
   },
-  "topbarLinks": [
-    {
-      "name": "Dashboard",
-      "url": "https://tupay.africa/dashboard"
+  "navbar": {
+    "links": [
+      {
+        "label": "Dashboard",
+        "href": "https://tupay.africa/dashboard"
+      }
+    ],
+    "primary": {
+      "label": "Get API Keys",
+      "href": "https://tupay.africa/dashboard/settings"
     }
-  ],
-  "topbarCtaButton": {
-    "name": "Get API Keys",
-    "url": "https://tupay.africa/dashboard/settings"
   },
   "navigation": {
     "groups": [
@@ -65,10 +68,12 @@
     ],
     "pages": []
   },
-  "footerSocials": {
-    "website": "https://tupay.africa",
-    "twitter": "https://x.com/tupaystyle",
-    "linkedin": "https://www.linkedin.com/company/tupaystyle"
+  "footer": {
+    "socials": {
+      "website": "https://tupay.africa",
+      "x": "https://x.com/tupaystyle",
+      "linkedin": "https://www.linkedin.com/company/tupaystyle"
+    }
   },
   "feedback": {
     "thumbsRating": true
