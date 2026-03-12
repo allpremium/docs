@@ -11,7 +11,7 @@ The request first checks that your account has sufficient balance. If successful
 
 ## Services
 
-Pass the service name in the `service` field of the request body.
+Pass the service name in the `service` field of the request body. If omitted, the service is auto-detected from the `account` number prefix.
 
 | Service | Description |
 |---------|-------------|
@@ -44,8 +44,8 @@ curl -X POST https://api.tupay.africa/v1/bus/order \
 ```
 </RequestExample>
 
-<ParamField body="service" type="string" required>
-  Airtime service identifier — see [Services](#services) above.
+<ParamField body="service" type="string">
+  Airtime service identifier — see [Services](#services) above. If omitted, the service is auto-detected from the `account` number prefix.
 </ParamField>
 
 <ParamField body="account" type="string" required>
