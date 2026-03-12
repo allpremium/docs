@@ -1,0 +1,64 @@
+/* Brand color — updated by apply-brand.js at startup */
+:root { --brand-primary: #2C58D9; }
+
+/* Cards: faint brand-tinted background + matching border
+   rgba values updated by apply-brand.js at startup */
+a:has([data-component-part="card-content-container"]) {
+  background-color: rgba(44, 88, 217, 0.06) !important;
+  border-color: rgba(44, 88, 217, 0.25) !important;
+}
+
+/* Dark mode */
+.dark a:has([data-component-part="card-content-container"]) {
+  background-color: rgba(44, 88, 217, 0.12) !important;
+}
+
+/* Hide only the "Powered by Mintlify" link, not the next element (support message may be a sibling) */
+footer a[href*="mintlify.com"] {
+  display: none !important;
+}
+
+/* Footer: content left-aligned; only the social block pushed right */
+footer {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+}
+/* Single selector: push only the direct child that contains social links to the right */
+footer > div:has(a[href*="linkedin"]) {
+  margin-left: auto !important;
+}
+/* Prevent first block (message) from shrinking to zero width */
+footer > div > *:first-child {
+  flex-shrink: 0 !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Typography tweaks — slightly smaller body text
+   ───────────────────────────────────────────────────────────── */
+
+body, p, li, div, span {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+code, pre code, .shiki code {
+  font-size: 0.9rem !important;
+}
+
+/* Force Mintlify Shiki code blocks (with language/numberoflines attrs)
+   to respect the smaller code font size, including inner spans */
+code[language][numberoflines],
+code[language][numberoflines] span {
+  font-size: 0.8rem !important;
+}
+
+h1 {
+  font-size: 1.5rem !important;
+}
+
+/* Ensure highlighted spans (Shiki) match body text size */
+span[style*="--shiki-dark"] {
+  font-size: 0.9rem !important;
+}

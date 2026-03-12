@@ -1,0 +1,55 @@
+---
+title: "Authorization"
+description: "Exchange your API credentials for a bearer token used on every request."
+---
+
+Tupay uses API keys to authenticate requests. View and manage your keys in [Settings](https://tupay.africa/dashboard/settings).
+
+<Warning>
+  Keep your API keys secure — do not share them in publicly accessible areas such as GitHub or client-side code.
+</Warning>
+
+**POST** `/v1/bus/token`
+
+---
+
+## Request
+
+Exchange your **Consumer UUID** and **API key** for a short-lived bearer token using HTTP Basic Auth. Encode `consumer_uuid:api_key` as a Base64 string and pass it in the `Authorization` header.
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.tupay.africa/v1/bus/token \
+  -H 'Authorization: Basic {base64(consumer_uuid:api_key)}'
+```
+</RequestExample>
+
+---
+
+## Response
+
+<ResponseExample>
+```json Response
+{
+  "access_token": "ABCDEFG1234567890==",
+  "issued_at":    1234567890,
+  "expires_in":   3600
+}
+```
+</ResponseExample>
+
+<ResponseField name="access_token" type="string">
+  Bearer token — pass this in `Authorization: Bearer {token}` on all subsequent requests.
+</ResponseField>
+
+<ResponseField name="issued_at" type="number">
+  Token issue time (Unix milliseconds).
+</ResponseField>
+
+<ResponseField name="expires_in" type="number">
+  Token lifetime in seconds. Tokens expire after **1 hour** — request a new one using your credentials.
+</ResponseField>
+
+<Info>
+  All API requests must be made over HTTPS. Calls over plain HTTP and unauthenticated requests will fail.
+</Info>

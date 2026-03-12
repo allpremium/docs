@@ -1,0 +1,86 @@
+---
+title: "Bill Enquiry"
+description: "Look up the outstanding bill for a subscription account before paying."
+---
+
+**POST** `/v1/bus/bill/{service}`
+
+---
+
+## Services
+
+| Service | Description |
+|---------|-------------|
+| `dstv` | DStv |
+| `gotv` | GOtv |
+| `zuku` | Zuku |
+| `startimes` | StarTimes |
+
+---
+
+## Request
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.tupay.africa/v1/bus/bill/dstv \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer {token}' \
+  -d '{
+    "account": "0733000000",
+    "phone":   "254722000000"
+  }'
+```
+</RequestExample>
+
+<ParamField body="account" type="string" required>
+  Subscription account number.
+</ParamField>
+
+<ParamField body="phone" type="string" required>
+  Customer phone number.
+</ParamField>
+
+---
+
+## Response
+
+<ResponseExample>
+```json Response
+{
+  "status": 20,
+  "response": [
+    {
+      "account":  "1234",
+      "balance":  100,
+      "currency": "KES",
+      "message":  "Text"
+    }
+  ],
+  "error": null,
+  "due":   "2025-01-01"
+}
+```
+</ResponseExample>
+
+<ResponseField name="status" type="number">
+  See [Status Codes](/status).
+</ResponseField>
+
+<ResponseField name="response" type="array">
+  List of accounts with outstanding balances.
+
+  <Expandable title="response[]">
+    <ResponseField name="account" type="string">Account number.</ResponseField>
+    <ResponseField name="balance" type="number">Outstanding balance.</ResponseField>
+    <ResponseField name="currency" type="string">Currency code.</ResponseField>
+    <ResponseField name="message" type="string">Account message.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error description, if applicable.
+</ResponseField>
+
+<ResponseField name="due" type="string">
+  Bill due date.
+</ResponseField>

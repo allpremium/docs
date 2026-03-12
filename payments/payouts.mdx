@@ -1,0 +1,196 @@
+---
+title: "Payouts"
+description: "Send funds to a mobile money account, bank account, or stablecoin wallet."
+---
+
+The request first checks that your account has sufficient balance. If successful, an order is placed and the response confirms the request is in progress. A [callback URL](/callback) is required to receive the final status; you can also poll the [status](/payments/status) endpoint.
+
+**POST** `/v1/bus/pay`
+
+---
+
+## Services
+
+Pass the service name in the `service` field of the request body.
+
+| Service | Description |
+|---------|-------------|
+| `mpesa` | Safaricom M-Pesa |
+| `airtel` | Airtel Money |
+| `absa` | ABSA Bank |
+| `equity` | Equity Bank |
+| `kcb` | KCB Bank |
+| `usdc` | USD Coin (stablecoin) |
+| `usdt` | Tether (stablecoin) |
+
+---
+
+## Request signing
+
+Payout requests must be signed with HMAC-SHA256. Two additional headers are required on every call:
+
+| Header | Description |
+|--------|-------------|
+| `X-Tupay-Timestamp` | Current Unix time in **seconds** (e.g. `1709200000`). Requests older than 5 minutes are rejected. |
+| `X-Tupay-Signature` | HMAC-SHA256 signature — see computation below. |
+
+### Computing the signature
+
+```javascript Node.js
+const crypto = require('crypto');
+
+// Step 1 — derive your per-client signing secret (do this once, cache the result)
+const clientSecret = crypto
+  .createHmac('sha256', master_secret)
+  .update(`${consumer_uuid}:${api_key}`)
+  .digest('hex');
+
+// Step 2 — build the payload for each request
+const timestamp = Math.floor(Date.now() / 1000).toString();
+const method    = 'POST';
+const path      = '/v1/bus/pay';
+const bodyStr   = JSON.stringify(requestBody);
+const bodyHash  = crypto.createHash('sha256').update(bodyStr, 'utf8').digest('hex');
+const payload   = timestamp + method + path + bodyHash;
+
+// Step 3 — sign
+const signature = crypto
+  .createHmac('sha256', clientSecret)
+  .update(payload)
+  .digest('hex');
+```
+
+```python Python
+import hashlib, hmac, json, time
+
+# Step 1 — derive your per-client signing secret
+client_secret = hmac.new(
+    master_secret.encode(), f"{consumer_uuid}:{api_key}".encode(), hashlib.sha256
+).hexdigest()
+
+# Step 2 — build the payload
+timestamp  = str(int(time.time()))
+method     = "POST"
+path       = "/v1/bus/pay"
+body_str   = json.dumps(request_body, separators=(',', ':'))
+body_hash  = hashlib.sha256(body_str.encode()).hexdigest()
+payload    = timestamp + method + path + body_hash
+
+# Step 3 — sign
+signature = hmac.new(
+    client_secret.encode(), payload.encode(), hashlib.sha256
+).hexdigest()
+```
+
+<Tip>
+  Pass a unique UUID in the `idempotencyKey` body field. The server uses it to deduplicate requests — a retry with the same key returns the original result instead of sending a duplicate payout.
+</Tip>
+
+---
+
+## Request
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.tupay.africa/v1/bus/pay \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer {token}' \
+  -H 'X-Tupay-Timestamp: {unix_seconds}' \
+  -H 'X-Tupay-Signature: {signature}' \
+  -d '{
+    "service":        "mpesa",
+    "account":        "0733000000",
+    "amount":         10,
+    "currency":       "KES",
+    "reference":      "ref1234",
+    "idempotencyKey": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "name":           "John",
+    "phone":          "254722000000",
+    "number":         "100100",
+    "note":           "Paying John"
+  }'
+```
+</RequestExample>
+
+<ParamField body="service" type="string" required>
+  Payment service identifier — see [Services](#services) above.
+</ParamField>
+
+<ParamField body="account" type="string" required>
+  Recipient account (e.g. phone number or wallet address).
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Amount to send.
+</ParamField>
+
+<ParamField body="currency" type="string" required>
+  Currency code (e.g. `KES`, `USD`).
+</ParamField>
+
+<ParamField body="reference" type="string">
+  Your internal transaction reference.
+</ParamField>
+
+<ParamField body="idempotencyKey" type="string">
+  Unique UUID per request — prevents duplicate payouts on retry. A retry with the same key returns the original result instead of sending a new payout.
+</ParamField>
+
+<ParamField body="name" type="string">
+  Recipient first name.
+</ParamField>
+
+<ParamField body="phone" type="string">
+  Recipient phone number.
+</ParamField>
+
+<ParamField body="number" type="string">
+  Paybill or till number.
+</ParamField>
+
+<ParamField body="note" type="string">
+  Transaction note.
+</ParamField>
+
+---
+
+## Response
+
+<ResponseExample>
+```json Success
+{
+  "id":        "ABCDEFG250101",
+  "reference": "ref1234",
+  "status":    0,
+  "message":   "Pending"
+}
+```
+</ResponseExample>
+
+<ResponseField name="id" type="string">
+  Tupay transaction ID (absent on failure).
+</ResponseField>
+
+<ResponseField name="reference" type="string">
+  Your internal reference.
+</ResponseField>
+
+<ResponseField name="status" type="number">
+  See [Status Codes](/status).
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status.
+</ResponseField>
+
+---
+
+## Error responses
+
+| HTTP | Reason |
+|------|--------|
+| `400` | Missing required field (`service`, `account`, `amount`, `currency`) or invalid `X-Tupay-Timestamp` |
+| `403` | Missing HMAC headers, invalid signature, timestamp outside ±5 minute window, or IP not whitelisted |
+| `409` | Duplicate request — same `idempotencyKey` already processed. Use a new UUID to retry. |
+| `402` | Insufficient balance |
+| `429` | Rate limit exceeded — too many requests from this IP |

@@ -1,0 +1,114 @@
+---
+title: "Identity"
+description: "Verify a customer's identity via KYC document check."
+---
+
+The request first checks that your account has sufficient balance. If successful, a verification order is placed. A [callback URL](/callback) is required to receive the final result; you can also poll the [status](/payments/status) endpoint.
+
+**POST** `/v1/bus/verify/{service}`
+
+---
+
+## Services
+
+| Service | Description |
+|---------|-------------|
+| `kyc` | Know Your Customer document verification |
+
+---
+
+## Request
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.tupay.africa/v1/bus/verify/kyc \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer {token}' \
+  -d '{
+    "documentType":   "ID",
+    "documentNumber": "1234",
+    "countryCode":    "KE",
+    "firstName":      "John",
+    "lastName":       "Maina",
+    "dateOfBirth":    "2000-01-01",
+    "reference":      "ref1234"
+  }'
+```
+</RequestExample>
+
+<ParamField body="documentType" type="string" required>
+  Document type: `ID`, `PASSPORT`, or `ALIENID`.
+</ParamField>
+
+<ParamField body="documentNumber" type="string" required>
+  Document number.
+</ParamField>
+
+<ParamField body="countryCode" type="string" required>
+  ISO country code e.g. `KE`, `RW`.
+</ParamField>
+
+<ParamField body="firstName" type="string" required>
+  Customer first name.
+</ParamField>
+
+<ParamField body="lastName" type="string" required>
+  Customer last name.
+</ParamField>
+
+<ParamField body="dateOfBirth" type="string" required>
+  Date of birth in `yyyy-MM-dd` format.
+</ParamField>
+
+<ParamField body="reference" type="string">
+  Your internal reference.
+</ParamField>
+
+---
+
+## Response
+
+<ResponseExample>
+```json Response
+{
+  "id":        "ABCDEFG250101",
+  "reference": "ref1234",
+  "status":    0,
+  "message":   "Pending"
+}
+```
+</ResponseExample>
+
+<ResponseField name="id" type="string">
+  Transaction ID (absent on failure).
+</ResponseField>
+
+<ResponseField name="reference" type="string">
+  Your internal reference.
+</ResponseField>
+
+<ResponseField name="status" type="number">
+  See [Status Codes](/status).
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status.
+</ResponseField>
+
+---
+
+## Callback fields
+
+The following additional fields are included in the [callback](/callback) payload for identity requests.
+
+<ResponseField name="identity.documentType" type="string">Document type.</ResponseField>
+<ResponseField name="identity.documentNumber" type="string">Document number.</ResponseField>
+<ResponseField name="identity.documentSerialNumber" type="string">Document serial number.</ResponseField>
+<ResponseField name="identity.documentIssueDate" type="string">Document issue date.</ResponseField>
+<ResponseField name="identity.IssuedBy" type="string">Issuing authority.</ResponseField>
+<ResponseField name="identity.customer.firstName" type="string">First name.</ResponseField>
+<ResponseField name="identity.customer.middleName" type="string">Middle name.</ResponseField>
+<ResponseField name="identity.customer.lastName" type="string">Last name.</ResponseField>
+<ResponseField name="identity.customer.gender" type="string">Gender.</ResponseField>
+<ResponseField name="identity.customer.nationality" type="string">Nationality.</ResponseField>
+<ResponseField name="identity.customer.birthDate" type="string">Date of birth.</ResponseField>

@@ -1,0 +1,76 @@
+{
+  "name": "Tupay",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/logo/favicon.svg",
+  "theme": "mint",
+  "colors": {
+    "primary": "#2C58D9",
+    "light": "#689DF0",
+    "dark": "#1238A0"
+  },
+  "topbarLinks": [
+    {
+      "name": "Dashboard",
+      "url": "https://tupay.africa/dashboard"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Get API Keys",
+    "url": "https://tupay.africa/dashboard/settings"
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "quickstart",
+          "prerequisites/authorization",
+          "prerequisites/idempotency",
+          "callback",
+          "status"
+        ]
+      },
+      {
+        "group": "Payments",
+        "pages": [
+          "payments/accept",
+          "payments/payouts",
+          "payments/balance",
+          "payments/identity",
+          "payments/status"
+        ]
+      },
+      {
+        "group": "Messaging",
+        "pages": ["sms"]
+      },
+      {
+        "group": "Airtime",
+        "pages": [
+          "airtime/order",
+          "airtime/status"
+        ]
+      },
+      {
+        "group": "Bills",
+        "pages": [
+          "bills/bill",
+          "bills/order",
+          "bills/status"
+        ]
+      }
+    ],
+    "pages": []
+  },
+  "footerSocials": {
+    "website": "https://tupay.africa",
+    "twitter": "https://x.com/tupaystyle",
+    "linkedin": "https://www.linkedin.com/company/tupaystyle"
+  },
+  "feedback": {
+    "thumbsRating": true
+  }
+}

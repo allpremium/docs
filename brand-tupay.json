@@ -1,0 +1,12 @@
+{
+  "name": "Tupay",
+  "baseUrl": "https://api.tupay.africa",
+  "dashboardUrl": "https://tupay.africa/dashboard",
+  "apiKeysUrl": "https://tupay.africa/dashboard/settings",
+  "website": "https://tupay.africa",
+  "primaryColor": "#2C58D9",
+  "lightColor": "#689DF0",
+  "darkColor": "#1238A0",
+  "twitter": "https://x.com/tupaystyle",
+  "linkedin": "https://www.linkedin.com/company/tupaystyle"
+}

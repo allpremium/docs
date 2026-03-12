@@ -1,0 +1,35 @@
+---
+title: "Balance"
+description: "Retrieve the current balance on your account."
+---
+
+**GET** `/v1/bus/balance`
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.tupay.africa/v1/bus/balance \
+  -H 'Authorization: Bearer {token}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status":   20,
+  "amount":   100,
+  "currency": "KES"
+}
+```
+</ResponseExample>
+
+<ResponseField name="status" type="number">
+  See [Status Codes](/status).
+</ResponseField>
+
+<ResponseField name="amount" type="number">
+  Current account balance.
+</ResponseField>
+
+<ResponseField name="currency" type="string">
+  Currency code.
+</ResponseField>

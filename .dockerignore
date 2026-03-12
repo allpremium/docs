@@ -1,0 +1,12 @@
+mintlify.tar
+.tar.xf
+*.tar
+*.tar.gz
+*.tar.xz
+.idea/
+node_modules/
+docs.json
+.DS_Store
+._*
+**/.DS_Store
+**/._*

@@ -1,0 +1,12 @@
+{
+  "name": "Milele",
+  "baseUrl": "https://api.milele.co.ke",
+  "dashboardUrl": "https://milele.co.ke/dashboard",
+  "apiKeysUrl": "https://milele.co.ke/dashboard/settings",
+  "website": "https://milele.co.ke",
+  "primaryColor": "#D03030",
+  "lightColor": "#FFC1AC",
+  "darkColor": "#BA1833",
+  "twitter": "https://x.com/mileleairtime",
+  "linkedin": "https://www.linkedin.com/company/mileleairtime"
+}

@@ -1,0 +1,182 @@
+---
+title: "Accept a Payment"
+description: "Take a customer payment and confirm the final status."
+---
+
+**POST** `/v1/bus/create` supports two integration modes:
+
+| Mode | Who uses it | Auth | Signing |
+|------|-------------|------|---------|
+| **Public checkout** | Frontend / embedded checkout page | UUID in body | Not required |
+| **Backend API** | Server-to-server API clients | Bearer token | HMAC-SHA256 required |
+
+---
+
+## Public Checkout
+
+Use this mode when you embed a payment form directly in your frontend. No server-side token is required — the `id` (UUID) acts as the capability identifier for the business.
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.tupay.africa/v1/bus/create \
+  -H "Content-Type: application/json" \
+  -H "Origin: https://shop.example.com" \
+  -d '{
+    "id":             "uuid-here",
+    "name":           "ShortName",
+    "phone":          "254722000000",
+    "service":        "mpesa",
+    "idempotencyKey": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "payables": [
+      {
+        "name":     "Order #1234",
+        "account":  "0733000000",
+        "currency": "KES",
+        "amount":   100
+      }
+    ]
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status":  20,
+  "message": "Enter PIN on your phone"
+}
+```
+</ResponseExample>
+
+### Request fields
+
+<ParamField body="id" type="string" required>
+  Your Tupay business UUID.
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  Business short name — must match the configured credentials name exactly.
+</ParamField>
+
+<ParamField body="phone" type="string" required>
+  Customer phone number (MSISDN e.g. `254722000000`).
+</ParamField>
+
+<ParamField body="service" type="string" required>
+  Payment service identifier e.g. `mpesa`.
+</ParamField>
+
+<ParamField body="idempotencyKey" type="string" required>
+  Unique UUID per payment attempt — required for deduplication.
+</ParamField>
+
+<ParamField body="payables" type="array" required>
+  One or more line items.
+
+  <Expandable title="payables[]">
+    <ParamField body="name" type="string">
+      Line item description shown in reporting.
+    </ParamField>
+    <ParamField body="account" type="string" required>
+      Target account (mobile number or paybill account).
+    </ParamField>
+    <ParamField body="currency" type="string" required>
+      ISO currency code e.g. `KES`.
+    </ParamField>
+    <ParamField body="amount" type="number" required>
+      Amount for this line item.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="address" type="string">
+  Delivery address (optional metadata).
+</ParamField>
+
+<ParamField body="comment" type="string">
+  Order note.
+</ParamField>
+
+<ParamField body="number" type="string">
+  Order or reference number.
+</ParamField>
+
+### Security applied automatically
+
+- **IP rate limit** — `429` if the same IP exceeds the request threshold.
+- **Phone rate limit** — `429` if the same phone receives too many STK prompts.
+- **Origin allowlist** — if the business has configured allowed origins, requests from other origins are rejected with `403`.
+- **Amount bounds** — if the business has configured `min`/`max` amounts, out-of-range totals are rejected with `400`.
+- **Idempotency dedup** — the same `idempotencyKey` + business ID combination is rejected with `409` within 24 hours.
+
+---
+
+## Backend API (authenticated + HMAC)
+
+Use this mode for server-to-server calls. Obtain a Bearer token first (see [Authorization](/prerequisites/authorization)), then sign every request using HMAC-SHA256.
+
+The signing algorithm is identical to [Payouts](/payments/payouts#request-signing) — the same signing helper works for both endpoints.
+
+### Signature
+
+```
+clientSecret = HMAC-SHA256(master_secret, consumer_uuid + ":" + api_key)
+signature    = HMAC-SHA256(clientSecret,  timestamp + "POST" + "/v1/bus/create" + SHA-256(body))
+```
+
+**Required headers:**
+
+| Header | Description |
+|--------|-------------|
+| `Authorization` | `Bearer {access_token}` from `POST /v1/bus/token` |
+| `X-Tupay-Timestamp` | Unix timestamp in seconds — must be within ±5 minutes of server time |
+| `X-Tupay-Signature` | HMAC-SHA256 signature as described above |
+
+<RequestExample>
+```bash cURL
+TIMESTAMP=$(date +%s)
+BODY='{"name":"ShortName","phone":"254722000000","service":"mpesa","idempotencyKey":"f47ac10b-58cc-4372-a567-0e02b2c3d479","payables":[{"account":"0733000000","currency":"KES","amount":500}]}'
+BODY_HASH=$(echo -n "$BODY" | sha256sum | cut -d' ' -f1)
+PAYLOAD="${TIMESTAMP}POST/v1/bus/create${BODY_HASH}"
+CLIENT_SECRET=$(echo -n "${CONSUMER_UUID}:${API_KEY}" | openssl dgst -sha256 -hmac "$MASTER_SECRET" -hex | cut -d' ' -f2)
+SIGNATURE=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$CLIENT_SECRET" -hex | cut -d' ' -f2)
+
+curl -X POST https://api.tupay.africa/v1/bus/create \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer {access_token}" \
+  -H "X-Tupay-Timestamp: $TIMESTAMP" \
+  -H "X-Tupay-Signature: $SIGNATURE" \
+  -d "$BODY"
+```
+</RequestExample>
+
+### Field differences from public checkout
+
+<ParamField body="id" type="string">
+  Omit — derived from the Bearer token.
+</ParamField>
+
+<ParamField body="idempotencyKey" type="string" required>
+  Unique UUID — baked into the HMAC signature, making it tamper-proof.
+</ParamField>
+
+---
+
+## After payment creation
+
+The customer receives an STK push or equivalent prompt. To track the result:
+
+1. **Callbacks** (recommended) — configure a callback URL in the dashboard; Tupay will POST the final status. See [Callbacks](/callback).
+2. **Polling** — call [Transaction Status](/payments/status) with the transaction ID.
+
+---
+
+## Error codes
+
+| HTTP | Meaning |
+|------|---------|
+| `400` | Missing required field / `idempotencyKey` / amount out of bounds / invalid timestamp |
+| `403` | Invalid HMAC signature / origin not permitted |
+| `409` | Duplicate request — same `idempotencyKey` already processed |
+| `429` | Rate limit exceeded — too many requests from this IP or phone number |
+| `501` | Business not configured (name mismatch or missing credentials) |

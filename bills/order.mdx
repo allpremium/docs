@@ -1,0 +1,99 @@
+---
+title: "Pay a Bill"
+description: "Pay a subscription bill for DStv, GOtv, Zuku, or StarTimes."
+---
+
+The request first checks that your account has sufficient balance. If successful, an order is placed. A [callback URL](/callback) is required to receive the final status; you can also poll the [status](/bills/status) endpoint.
+
+**POST** `/v1/bus/order/{service}`
+
+---
+
+## Services
+
+| Service | Description |
+|---------|-------------|
+| `dstv` | DStv |
+| `gotv` | GOtv |
+| `zuku` | Zuku |
+| `startimes` | StarTimes |
+
+---
+
+## Request
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.tupay.africa/v1/bus/order/dstv \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer {token}' \
+  -d '{
+    "account":   "0733000000",
+    "amount":    10,
+    "currency":  "KES",
+    "reference": "ref1234",
+    "name":      "John",
+    "phone":     "254722000000",
+    "shortcode": "100100"
+  }'
+```
+</RequestExample>
+
+<ParamField body="account" type="string" required>
+  Subscription account number.
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Amount to pay.
+</ParamField>
+
+<ParamField body="currency" type="string" required>
+  Currency code.
+</ParamField>
+
+<ParamField body="reference" type="string">
+  Your internal reference.
+</ParamField>
+
+<ParamField body="name" type="string">
+  Customer first name.
+</ParamField>
+
+<ParamField body="phone" type="string">
+  Customer phone number.
+</ParamField>
+
+<ParamField body="shortcode" type="string">
+  Shortcode if required by the provider.
+</ParamField>
+
+---
+
+## Response
+
+<ResponseExample>
+```json Response
+{
+  "id":        "ABCDEFG250101",
+  "reference": "ref1234",
+  "status":    0,
+  "message":   "Pending"
+}
+```
+</ResponseExample>
+
+<ResponseField name="id" type="string">
+  Transaction ID (absent on failure).
+</ResponseField>
+
+<ResponseField name="reference" type="string">
+  Your internal reference.
+</ResponseField>
+
+<ResponseField name="status" type="number">
+  See [Status Codes](/status).
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status.
+</ResponseField>
