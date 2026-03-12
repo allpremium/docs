@@ -20,6 +20,7 @@
       }
     ],
     "primary": {
+      "type": "button",
       "label": "Get API Keys",
       "href": "https://tupay.africa/dashboard/settings"
     }
