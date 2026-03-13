@@ -66,6 +66,20 @@ function buildPairs(from, to) {
 const allBrandFiles = fs.readdirSync(ROOT).filter(f => /^brand-.+\.json$/.test(f));
 const allBrands = allBrandFiles.map(f => JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf-8')));
 
+// Regex matching {/* brand:tupay:start */} ... {/* brand:tupay:end */} blocks
+// including the surrounding blank lines so no double-blank-lines are left behind.
+const TUPAY_BLOCK_RE = /\n?\{\/\* brand:tupay:start \*\/\}\n([\s\S]*?)\n\{\/\* brand:tupay:end \*\/\}\n?/g;
+
+function applyBrandBlocks(content, isTupay) {
+  if (isTupay) {
+    // Keep the content, strip only the marker comments
+    return content.replace(TUPAY_BLOCK_RE, '\n$1\n');
+  } else {
+    // Remove the entire block including its content
+    return content.replace(TUPAY_BLOCK_RE, '\n');
+  }
+}
+
 function transform(content) {
   // Revert: any known brand value → canonical Tupay value
   for (const b of allBrands) {
@@ -78,6 +92,8 @@ function transform(content) {
   for (const [from, to] of buildPairs(canonical, target)) {
     content = content.split(from).join(to);
   }
+  // Show/hide brand-specific blocks
+  content = applyBrandBlocks(content, brand === 'tupay');
   return content;
 }
 

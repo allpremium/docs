@@ -3,9 +3,9 @@ title: "Pay a Bill"
 description: "Pay a subscription bill for DStv, GOtv, Zuku, or StarTimes."
 ---
 
-The request first checks that your account has sufficient balance. If successful, an order is placed. A [callback URL](/callback) is required to receive the final status; you can also poll the [status](/bills/status) endpoint.
+The request first checks that your account has sufficient balance. If successful, an order is placed. A [callback URL](/callback) is required to receive the final status; you can also poll the [status](/core/status) endpoint.
 
-**POST** `/v1/bus/order`
+**POST** `/v1/bills/order`
 
 ---
 
@@ -26,7 +26,7 @@ Pass the service name in the `service` field of the request body.
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.tupay.africa/v1/bus/order \
+curl -X POST https://api.tupay.africa/v1/bills/order \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer {token}' \
   -d '{

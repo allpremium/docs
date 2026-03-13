@@ -3,9 +3,9 @@ title: "Sms"
 description: "Send a message via SMS, Telegram, or WhatsApp."
 ---
 
-The request first checks that your account has sufficient balance. If successful, the message is queued for delivery. A [callback URL](/callback) is required to receive the final status; you can also poll the [status](/payments/status) endpoint.
+The request first checks that your account has sufficient balance. If successful, the message is queued for delivery. A [callback URL](/callback) is required to receive the final status; you can also poll the [status](/core/status) endpoint.
 
-**POST** `/v1/bus/send/{service}`
+**POST** `/v1/messages/send/{service}`
 
 ---
 
@@ -23,7 +23,7 @@ The request first checks that your account has sufficient balance. If successful
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.tupay.africa/v1/bus/send/sms \
+curl -X POST https://api.tupay.africa/v1/messages/send/sms \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer {token}' \
   -d '{

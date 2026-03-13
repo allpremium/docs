@@ -3,7 +3,7 @@ title: "Accept a Payment"
 description: "Take a customer payment and confirm the final status."
 ---
 
-**POST** `/v1/bus/create` supports two integration modes:
+**POST** `/v1/pay/accept` supports two integration modes:
 
 | Mode | Who uses it | Auth | Signing |
 |------|-------------|------|---------|
@@ -18,7 +18,7 @@ Use this mode when you embed a payment form directly in your frontend. No server
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.tupay.africa/v1/bus/create \
+curl -X POST https://api.tupay.africa/v1/pay/accept \
   -H "Content-Type: application/json" \
   -H "Origin: https://shop.example.com" \
   -d '{
@@ -120,14 +120,14 @@ The signing algorithm is identical to [Payouts](/payments/payouts#request-signin
 ### Signature
 
 ```
-signature = HMAC-SHA256(signing_secret, timestamp + "POST" + "/v1/bus/create" + SHA-256(body))
+signature = HMAC-SHA256(signing_secret, timestamp + "POST" + "/v1/pay/accept" + SHA-256(body))
 ```
 
 **Required headers:**
 
 | Header | Description |
 |--------|-------------|
-| `Authorization` | `Bearer {access_token}` from `POST /v1/bus/token` |
+| `Authorization` | `Bearer {access_token}` from `POST /v1/token` |
 | `X-Api-Timestamp` | Unix timestamp in seconds — must be within ±5 minutes of server time |
 | `X-Api-Signature` | HMAC-SHA256 signature as described above |
 
@@ -136,10 +136,10 @@ signature = HMAC-SHA256(signing_secret, timestamp + "POST" + "/v1/bus/create" + 
 TIMESTAMP=$(date +%s)
 BODY='{"name":"ShortName","phone":"254722000000","service":"mpesa","idempotencyKey":"f47ac10b-58cc-4372-a567-0e02b2c3d479","payables":[{"account":"0733000000","currency":"KES","amount":500}]}'
 BODY_HASH=$(echo -n "$BODY" | sha256sum | cut -d' ' -f1)
-PAYLOAD="${TIMESTAMP}POST/v1/bus/create${BODY_HASH}"
+PAYLOAD="${TIMESTAMP}POST/v1/pay/accept{BODY_HASH}"
 SIGNATURE=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$SIGNING_SECRET" -hex | cut -d' ' -f2)
 
-curl -X POST https://api.tupay.africa/v1/bus/create \
+curl -X POST https://api.tupay.africa/v1/pay/accept \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer {access_token}" \
   -H "X-Api-Timestamp: $TIMESTAMP" \
@@ -165,7 +165,7 @@ curl -X POST https://api.tupay.africa/v1/bus/create \
 The customer receives an STK push or equivalent prompt. To track the result:
 
 1. **Callbacks** (recommended) — configure a callback URL in the dashboard; Tupay will POST the final status. See [Callbacks](/callback).
-2. **Polling** — call [Transaction Status](/payments/status) with the transaction ID.
+2. **Polling** — call [Transaction Status](/core/status) with the transaction ID.
 
 ---
 

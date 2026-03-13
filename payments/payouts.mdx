@@ -3,9 +3,9 @@ title: "Payouts"
 description: "Send funds to a mobile money account, bank account, or stablecoin wallet."
 ---
 
-The request first checks that your account has sufficient balance. If successful, an order is placed and the response confirms the request is in progress. A [callback URL](/callback) is required to receive the final status; you can also poll the [status](/payments/status) endpoint.
+The request first checks that your account has sufficient balance. If successful, an order is placed and the response confirms the request is in progress. A [callback URL](/callback) is required to receive the final status; you can also poll the [status](/core/status) endpoint.
 
-**POST** `/v1/bus/pay`
+**POST** `/v1/payouts`
 
 ---
 
@@ -37,7 +37,7 @@ Payout requests must be signed with HMAC-SHA256 using your [`signing_secret`](/p
 ### Computing the signature
 
 ```
-signature = HMAC-SHA256(signing_secret, timestamp + "POST" + "/v1/bus/pay" + SHA-256(body))
+signature = HMAC-SHA256(signing_secret, timestamp + "POST" + "/v1/payouts" + SHA-256(body))
 ```
 
 ```javascript Node.js
@@ -46,7 +46,7 @@ const crypto = require('crypto');
 // Build the payload
 const timestamp = Math.floor(Date.now() / 1000).toString();
 const method    = 'POST';
-const path      = '/v1/bus/pay';
+const path      = '/v1/payouts';
 const bodyStr   = JSON.stringify(requestBody);
 const bodyHash  = crypto.createHash('sha256').update(bodyStr, 'utf8').digest('hex');
 const payload   = timestamp + method + path + bodyHash;
@@ -64,7 +64,7 @@ import hashlib, hmac, json, time
 # Build the payload
 timestamp  = str(int(time.time()))
 method     = "POST"
-path       = "/v1/bus/pay"
+path       = "/v1/payouts"
 body_str   = json.dumps(request_body, separators=(',', ':'))
 body_hash  = hashlib.sha256(body_str.encode()).hexdigest()
 payload    = timestamp + method + path + body_hash
@@ -85,7 +85,7 @@ signature = hmac.new(
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.tupay.africa/v1/bus/pay \
+curl -X POST https://api.tupay.africa/v1/payouts \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer {token}' \
   -H 'X-Api-Timestamp: {unix_seconds}' \

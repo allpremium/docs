@@ -38,11 +38,16 @@
         ]
       },
       {
+        "group": "Core",
+        "pages": [
+          "core/balance"
+        ]
+      },
+      {
         "group": "Payments",
         "pages": [
           "payments/accept",
           "payments/payouts",
-          "payments/balance",
           "payments/identity",
           "payments/status"
         ]

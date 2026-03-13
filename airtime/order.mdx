@@ -3,9 +3,9 @@ title: "Order Airtime"
 description: "Top up a mobile number with airtime."
 ---
 
-The request first checks that your account has sufficient balance. If successful, an order is placed. A [callback URL](/callback) is required to receive the final status; you can also poll the [status](/airtime/status) endpoint.
+The request first checks that your account has sufficient balance. If successful, an order is placed. A [callback URL](/callback) is required to receive the final status; you can also poll the [status](/core/status) endpoint.
 
-**POST** `/v1/bus/order/airtime`
+**POST** `/v1/order/airtime`
 
 ---
 
@@ -27,7 +27,7 @@ Pass the service name in the `service` field of the request body. If omitted, th
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.tupay.africa/v1/bus/order \
+curl -X POST https://api.tupay.africa/v1/order/airtime\
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer {token}' \
   -d '{
