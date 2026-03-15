@@ -37,13 +37,19 @@
       ]
     },
     {
+      "group": "Core",
+      "pages": [
+        "core/balance",
+        "core/status"
+      ]
+    },
+    {
       "group": "Payments",
       "pages": [
         "payments/accept",
         "payments/payouts",
         "payments/balance",
-        "payments/identity",
-        "payments/status"
+        "payments/identity"
       ]
     },
     {
@@ -55,16 +61,14 @@
     {
       "group": "Airtime",
       "pages": [
-        "airtime/order",
-        "airtime/status"
+        "airtime/order"
       ]
     },
     {
       "group": "Bills",
       "pages": [
         "bills/bill",
-        "bills/order",
-        "bills/status"
+        "bills/order"
       ]
     }
   ],

@@ -40,7 +40,8 @@
       {
         "group": "Core",
         "pages": [
-          "core/balance"
+          "core/balance",
+          "core/status"
         ]
       },
       {
@@ -48,8 +49,7 @@
         "pages": [
           "payments/accept",
           "payments/payouts",
-          "payments/identity",
-          "payments/status"
+          "payments/identity"
         ]
       },
       {
@@ -59,16 +59,14 @@
       {
         "group": "Airtime",
         "pages": [
-          "airtime/order",
-          "airtime/status"
+          "airtime/order"
         ]
       },
       {
         "group": "Bills",
         "pages": [
           "bills/bill",
-          "bills/order",
-          "bills/status"
+          "bills/order"
         ]
       }
     ],
