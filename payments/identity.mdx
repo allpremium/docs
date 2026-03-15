@@ -3,7 +3,7 @@ title: "Identity"
 description: "Verify a customer's identity via KYC document check."
 ---
 
-The request first checks that your account has sufficient balance. If successful, a verification order is placed. A [callback URL](/callback) is required to receive the final result; you can also poll the [status](/payments/status) endpoint.
+The request first checks that your account has sufficient balance. If successful, a verification order is placed. A [webhook URL](/webhooks) is required to receive the final result; you can also poll the [status](/payments/status) endpoint.
 
 **POST** `/v1/pay/verify/{service}`
 
@@ -97,9 +97,9 @@ curl -X POST https://api.tupay.africa/v1/pay/verify/kyc \
 
 ---
 
-## Callback fields
+## Webhook fields
 
-The following additional fields are included in the [callback](/callback) payload for identity requests.
+The following additional fields are included in the [webhook](/webhooks) payload for identity requests.
 
 <ResponseField name="identity.documentType" type="string">Document type.</ResponseField>
 <ResponseField name="identity.documentNumber" type="string">Document number.</ResponseField>

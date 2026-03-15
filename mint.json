@@ -32,7 +32,7 @@
         "quickstart",
         "prerequisites/authorization",
         "prerequisites/idempotency",
-        "callback",
+        "webhooks",
         "status"
       ]
     },

@@ -3,7 +3,7 @@ title: "Sms"
 description: "Send a message via SMS, Telegram, or WhatsApp."
 ---
 
-The request first checks that your account has sufficient balance. If successful, the message is queued for delivery. A [callback URL](/callback) is required to receive the final status; you can also poll the [status](/core/status) endpoint.
+The request first checks that your account has sufficient balance. If successful, the message is queued for delivery. A [webhook URL](/webhooks) is required to receive the final status; you can also poll the [status](/core/status) endpoint.
 
 **POST** `/v1/messages/send/{service}`
 

@@ -3,7 +3,7 @@ title: "Payouts"
 description: "Send funds to a mobile money account, bank account, or stablecoin wallet."
 ---
 
-The request first checks that your account has sufficient balance. If successful, an order is placed and the response confirms the request is in progress. A [callback URL](/callback) is required to receive the final status; you can also poll the [status](/core/status) endpoint.
+The request first checks that your account has sufficient balance. If successful, an order is placed and the response confirms the request is in progress. A [webhook URL](/webhooks) is required to receive the final status; you can also poll the [status](/core/status) endpoint.
 
 **POST** `/v1/payouts`
 

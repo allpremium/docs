@@ -13,7 +13,7 @@ description: "Get up and running with Tupay in less than 5 minutes."
   <Card title="Send a Payout" icon="money-bill-transfer" href="/payments/payouts">
     Disburse funds to mobile money, bank, or stablecoin wallets
   </Card>
-  <Card title="Callbacks" icon="webhook" href="/callback">
+  <Card title="Webhooks" icon="webhook" href="/webhooks">
     Receive real-time transaction status updates on your server
   </Card>
 </CardGroup>
@@ -80,22 +80,22 @@ curl -X GET https://api.tupay.africa/v1/core/balance \
 
 1. **Create a payment** with the customer details and amount.
 2. The customer receives an **STK push** (or equivalent prompt) to complete payment.
-3. **Receive a callback** from Tupay with the final status.
+3. **Receive a webhook** from Tupay with the final status.
 4. Optionally **poll the status** endpoint for an immediate update.
 
 Follow the [Accept a Payment](/payments/accept) guide for a full walkthrough.
 
 ---
 
-## 5. Handle callbacks and errors
+## 5. Handle webhooks and errors
 
-Tupay sends **HTTP callbacks** to your server whenever a transaction changes state.
+Tupay sends **webhooks** to your server whenever a transaction changes state.
 
-- Implement a callback endpoint as described in [Callbacks](/callback).
+- Implement a webhook endpoint as described in [Webhooks](/webhooks).
 - Use the `status` field from [Status Codes](/status) to decide how to update your system:
 
 | Status | Meaning |
 |--------|---------|
 | `20` | Success — payment complete |
-| `0`, `3`, `31`, `100`, `101` | Still pending — wait for callback |
+| `0`, `3`, `31`, `100`, `101` | Still pending — wait for webhook |
 | Any other | Failed — review and handle |
