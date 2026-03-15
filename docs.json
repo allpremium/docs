@@ -34,6 +34,7 @@
           "quickstart",
           "prerequisites/authorization",
           "prerequisites/idempotency",
+          "prerequisites/rate-limiting",
           "webhooks",
           "status"
         ]

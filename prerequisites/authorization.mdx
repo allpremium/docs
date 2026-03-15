@@ -56,6 +56,8 @@ curl -X POST https://api.tupay.africa/v1/token \
   All API requests must be made over HTTPS. Calls over plain HTTP and unauthenticated requests will fail.
 </Info>
 
+Rate limits apply to the token endpoint. See [Rate limiting](/prerequisites/rate-limiting) for response headers (`X-RateLimit-*`, `Retry-After`) and recommended behaviour.
+
 ---
 
 ## Signing secret
