@@ -1,28 +1,29 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "Tupay",
+  "name": "Milele",
   "logo": {
     "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "light": "/logo/light.svg",
+    "href": "https://milele.co.ke"
   },
   "favicon": "/logo/favicon.svg",
   "theme": "mint",
   "colors": {
-    "primary": "#2C58D9",
-    "light": "#689DF0",
-    "dark": "#1238A0"
+    "primary": "#D03030",
+    "light": "#FFC1AC",
+    "dark": "#BA1833"
   },
   "navbar": {
     "links": [
       {
         "label": "Dashboard",
-        "href": "https://tupay.africa/dashboard"
+        "href": "https://milele.co.ke/dashboard"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Get API Keys",
-      "href": "https://tupay.africa/dashboard/settings"
+      "href": "https://milele.co.ke/dashboard/settings"
     }
   },
   "navigation": {
@@ -54,7 +55,9 @@
       },
       {
         "group": "Messaging",
-        "pages": ["sms"]
+        "pages": [
+          "sms"
+        ]
       },
       {
         "group": "Airtime",
@@ -74,9 +77,9 @@
   },
   "footer": {
     "socials": {
-      "website": "https://tupay.africa",
-      "x": "https://x.com/tupaystyle",
-      "linkedin": "https://www.linkedin.com/company/tupaystyle"
+      "website": "https://milele.co.ke",
+      "x": "https://x.com/mileleairtime",
+      "linkedin": "https://www.linkedin.com/company/mileleairtime"
     }
   },
   "feedback": {

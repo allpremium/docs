@@ -5,7 +5,6 @@ mintlify.tar
 *.tar.xz
 .idea/
 node_modules/
-docs.json
 .DS_Store
 ._*
 **/.DS_Store

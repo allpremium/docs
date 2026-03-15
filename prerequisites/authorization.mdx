@@ -3,11 +3,9 @@ title: "Authorization"
 description: "Exchange your API credentials for a bearer token used on every request."
 ---
 
-Tupay uses API keys to authenticate requests. View and manage your keys in [Settings](https://tupay.africa/dashboard/settings).
+Milele uses API keys to authenticate requests. View and manage your keys in [Settings](https://milele.co.ke/dashboard/settings).
 
-{/* brand:tupay:start */}
 API keys follow the format `tpay_live_<48 hex characters>` — 58 characters total, always starting with `tpay_live_`. The full key is shown **once** at creation and is never stored server-side, so store it securely immediately.
-{/* brand:tupay:end */}
 
 <Warning>
   Keep your API keys secure — do not share them in publicly accessible areas such as GitHub or client-side code.
@@ -23,7 +21,7 @@ Exchange your **Consumer UUID** and **API key** for a short-lived bearer token u
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.tupay.africa/v1/token \
+curl -X POST https://api.milele.co.ke/v1/token \
   -H 'Authorization: Basic {base64(consumer_uuid:api_key)}'
 ```
 </RequestExample>

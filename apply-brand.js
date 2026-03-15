@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * apply-brand.js — stamp brand-specific values into all Mintlify MDX files
- *                  and docs.json.
+ * apply-brand.js — stamp brand-specific values into Mintlify MDX files,
+ *                  docs.json, mint.json, and style.css (logo/card primary color).
  *
  * Usage:
  *   node apply-brand.js tupay          (local / npm script)
@@ -128,6 +128,10 @@ if (fs.existsSync(docsPath)) {
 
   docs.name = target.name;
 
+  if (typeof docs.logo === 'object' && docs.logo !== null) {
+    docs.logo.href = target.website;
+  }
+
   docs.colors = {
     primary: target.primaryColor,
     light:   target.lightColor,
@@ -151,7 +155,101 @@ if (fs.existsSync(docsPath)) {
   console.log('  patched  docs.json');
 }
 
-// ── 6. Write .brand.lock ──────────────────────────────────────────────────────
+// ── 6. Patch logo SVGs (wordmark name + brand fill color) ─────────────────────
+
+const logoDir = path.join(ROOT, 'logo');
+const logoFiles = ['dark.svg', 'light.svg'];
+function patchSvg(content) {
+  // Revert: any other brand's name and primary color → canonical Tupay
+  for (const b of allBrands) {
+    if (b.name === canonical.name) continue;
+    if (b.primaryColor) content = content.split(b.primaryColor).join(canonical.primaryColor);
+    content = content.split(b.name).join(canonical.name);
+  }
+  // Apply: canonical → target
+  content = content.split(canonical.primaryColor).join(target.primaryColor);
+  content = content.split(canonical.name).join(target.name);
+  return content;
+}
+if (fs.existsSync(logoDir)) {
+  const patched = [];
+  for (const file of logoFiles) {
+    const p = path.join(logoDir, file);
+    if (fs.existsSync(p)) {
+      const original = fs.readFileSync(p, 'utf-8');
+      const updated = patchSvg(original);
+      if (updated !== original) {
+        fs.writeFileSync(p, updated);
+        patched.push(`logo/${file}`);
+      }
+    }
+  }
+  if (patched.length) {
+    console.log('── logo SVGs ──────────────────────────────');
+    patched.forEach(f => console.log(`  patched  ${f}`));
+  }
+}
+
+// ── 7. Patch style.css (--brand-primary + card rgba) ─────────────────────────
+
+function hexToRgb(hex) {
+  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex);
+  if (!m) return null;
+  return {
+    r: parseInt(m[1], 16),
+    g: parseInt(m[2], 16),
+    b: parseInt(m[3], 16),
+  };
+}
+
+const stylePath = path.join(ROOT, 'style.css');
+if (fs.existsSync(stylePath) && target.primaryColor) {
+  const rgb = hexToRgb(target.primaryColor);
+  if (rgb) {
+    console.log('── style.css ───────────────────────────────');
+    let css = fs.readFileSync(stylePath, 'utf-8');
+    css = css.replace(/(:root\s*\{\s*--brand-primary:\s*)#[0-9a-fA-F]+(\s*;\s*\})/, `$1${target.primaryColor}$2`);
+    css = css.replace(/\brgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*([\d.]+)\s*\)/g, (_, a) => `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${a})`);
+    fs.writeFileSync(stylePath, css);
+    console.log('  patched  style.css');
+  }
+}
+
+// ── 8. Patch mint.json ────────────────────────────────────────────────────────
+
+const mintPath = path.join(ROOT, 'mint.json');
+if (fs.existsSync(mintPath)) {
+  console.log('── mint.json ────────────────────────────────');
+  const mint = JSON.parse(fs.readFileSync(mintPath, 'utf-8'));
+
+  mint.name = target.name;
+
+  if (typeof mint.logo === 'object' && mint.logo !== null) {
+    mint.logo.href = target.website;
+  }
+
+  mint.colors = mint.colors || {};
+  mint.colors.primary = target.primaryColor;
+  mint.colors.light = target.lightColor;
+  mint.colors.dark = target.darkColor;
+  if (mint.colors.anchors) {
+    mint.colors.anchors = { from: target.primaryColor, to: target.darkColor };
+  }
+
+  mint.topbarLinks = [{ name: 'Dashboard', url: target.dashboardUrl }];
+  mint.topbarCtaButton = { name: 'Get API Keys', url: target.apiKeysUrl };
+
+  mint.footerSocials = {
+    website: target.website,
+    twitter: target.twitter,
+    linkedin: target.linkedin,
+  };
+
+  fs.writeFileSync(mintPath, JSON.stringify(mint, null, 2) + '\n');
+  console.log('  patched  mint.json');
+}
+
+// ── 9. Write .brand.lock ──────────────────────────────────────────────────────
 
 fs.writeFileSync(path.join(ROOT, '.brand.lock'), brand);
 console.log(`\nDone. Brand lock: ${brand}\n`);

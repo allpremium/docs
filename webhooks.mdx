@@ -3,10 +3,10 @@ title: "Webhooks"
 description: "Receive real-time transaction status updates via HTTP webhooks."
 ---
 
-Tupay sends webhooks to your configured URL when a transaction reaches a final state. Set your webhook URL in [Settings](https://tupay.africa/dashboard/settings).
+Milele sends webhooks to your configured URL when a transaction reaches a final state. Set your webhook URL in [Settings](https://milele.co.ke/dashboard/settings).
 
 <Info>
-  Your webhook endpoint must return `HTTP 200` to acknowledge receipt. Tupay will retry failed deliveries automatically.
+  Your webhook endpoint must return `HTTP 200` to acknowledge receipt. Milele will retry failed deliveries automatically.
 </Info>
 
 ---
@@ -28,7 +28,7 @@ Tupay sends webhooks to your configured URL when a transaction reaches a final s
 </ResponseExample>
 
 <ResponseField name="id" type="string">
-  Tupay transaction ID.
+  Milele transaction ID.
 </ResponseField>
 
 <ResponseField name="reference" type="string">
@@ -63,11 +63,11 @@ Tupay sends webhooks to your configured URL when a transaction reaches a final s
 
 ## Verifying webhooks
 
-Webhooks are sent as HTTP `POST` requests to your configured URL. Your endpoint should return `HTTP 200` to acknowledge receipt. Tupay retries failed deliveries automatically.
+Webhooks are sent as HTTP `POST` requests to your configured URL. Your endpoint should return `HTTP 200` to acknowledge receipt. Milele retries failed deliveries automatically.
 
 ### Signature verification
 
-When your business has a **signing secret** (the same secret you receive by email at API key approval, used to sign API requests), Tupay includes an **`X-Webhook-Signature`** header on each webhook so you can verify the request came from Tupay and was not tampered with.
+When your business has a **signing secret** (the same secret you receive by email at API key approval, used to sign API requests), Milele includes an **`X-Webhook-Signature`** header on each webhook so you can verify the request came from Milele and was not tampered with.
 
 **Obtaining the secret**
 

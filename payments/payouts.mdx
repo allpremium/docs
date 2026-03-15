@@ -85,7 +85,7 @@ signature = hmac.new(
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.tupay.africa/v1/payouts \
+curl -X POST https://api.milele.co.ke/v1/payouts \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer {token}' \
   -H 'X-Api-Timestamp: {unix_seconds}' \
@@ -161,7 +161,7 @@ curl -X POST https://api.tupay.africa/v1/payouts \
 </ResponseExample>
 
 <ResponseField name="id" type="string">
-  Tupay transaction ID (absent on failure).
+  Milele transaction ID (absent on failure).
 </ResponseField>
 
 <ResponseField name="reference" type="string">
