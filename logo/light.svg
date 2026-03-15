@@ -1,8 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148 40">
-  <!-- Icon mark scaled to 32x32, centered vertically in 40px height -->
   <g transform="translate(4, 4) scale(0.5)">
     <path fill="#2C58D9" d="M55.522 55.676c2.225-2.247 2.225-5.91 0-8.157L16.742 8.343a5.677 5.677 0 0 0-8.073 0c-2.225 2.248-2.225 5.89 0 8.157l38.779 39.176a5.677 5.677 0 0 0 8.074 0M54.486 26.75c2.225-2.248 2.225-5.91 0-8.157L38.76 2.686a5.677 5.677 0 0 0-8.074 0c-2.225 2.247-2.225 5.909 0 8.156L46.43 26.75a5.677 5.677 0 0 0 8.075 0zM33.524 61.314c2.225-2.247 2.225-5.909 0-8.157L17.778 37.252a5.677 5.677 0 0 0-8.074 0c-2.225 2.247-2.225 5.909 0 8.157L25.45 61.314a5.677 5.677 0 0 0 8.074 0"/>
   </g>
-  <!-- Wordmark -->
   <text x="44" y="29" font-family="DM Sans, Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="32" font-weight="700" letter-spacing="-0.3" fill="#171B28">Tupay</text>
 </svg>
