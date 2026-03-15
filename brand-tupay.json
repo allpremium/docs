@@ -1,5 +1,8 @@
 {
   "name": "Tupay",
+  "logoDark": "logo/tupay/dark.svg",
+  "logoLight": "logo/tupay/light.svg",
+  "favicon": "logo/tupay/favicon.svg",
   "baseUrl": "https://api.tupay.africa",
   "dashboardUrl": "https://tupay.africa/dashboard",
   "apiKeysUrl": "https://tupay.africa/dashboard/settings",

@@ -155,38 +155,87 @@ if (fs.existsSync(docsPath)) {
   console.log('  patched  docs.json');
 }
 
-// ── 6. Patch logo SVGs (wordmark name + brand fill color) ─────────────────────
+// ── 6. Logo: copy brand-specific SVGs or patch canonical (Tupay) ──────────────
+//    Logo SVGs include the wordmark (brand name) so the name appears in the header.
+//    Brand JSON can set logoDark and logoLight (paths relative to ROOT). If both
+//    exist, they are copied to logo/dark.svg and logo/light.svg. Otherwise we
+//    copy canonical (Tupay) logos and patch name + primary color.
 
 const logoDir = path.join(ROOT, 'logo');
 const logoFiles = ['dark.svg', 'light.svg'];
-function patchSvg(content) {
-  // Revert: any other brand's name and primary color → canonical Tupay
+
+function patchSvgColor(content) {
+  for (const b of allBrands) {
+    if (b.name === canonical.name) continue;
+    if (b.primaryColor) content = content.split(b.primaryColor).join(canonical.primaryColor);
+  }
+  return content.split(canonical.primaryColor).join(target.primaryColor);
+}
+
+function patchSvgNameAndColor(content) {
   for (const b of allBrands) {
     if (b.name === canonical.name) continue;
     if (b.primaryColor) content = content.split(b.primaryColor).join(canonical.primaryColor);
     content = content.split(b.name).join(canonical.name);
   }
-  // Apply: canonical → target
   content = content.split(canonical.primaryColor).join(target.primaryColor);
   content = content.split(canonical.name).join(target.name);
   return content;
 }
+
+function copyLogo(sourceRel, destFile) {
+  const src = path.join(ROOT, sourceRel);
+  const dest = path.join(logoDir, destFile);
+  if (!fs.existsSync(src)) return false;
+  fs.copyFileSync(src, dest);
+  return true;
+}
+
+// Favicon: copy brand-specific favicon to logo/favicon.svg (docs/mint point to /logo/favicon.svg)
 if (fs.existsSync(logoDir)) {
-  const patched = [];
-  for (const file of logoFiles) {
-    const p = path.join(logoDir, file);
-    if (fs.existsSync(p)) {
-      const original = fs.readFileSync(p, 'utf-8');
-      const updated = patchSvg(original);
-      if (updated !== original) {
-        fs.writeFileSync(p, updated);
-        patched.push(`logo/${file}`);
+  const faviconSource = target.favicon || canonical.favicon || 'logo/tupay/favicon.svg';
+  const faviconSrc = path.join(ROOT, faviconSource);
+  const faviconDest = path.join(logoDir, 'favicon.svg');
+  if (fs.existsSync(faviconSrc)) {
+    fs.copyFileSync(faviconSrc, faviconDest);
+    if (!target.favicon) {
+      const content = fs.readFileSync(faviconDest, 'utf-8');
+      const patched = patchSvgColor(content);
+      if (patched !== content) fs.writeFileSync(faviconDest, patched);
+    }
+    console.log('── favicon ─────────────────────────────────');
+    console.log(`  copied   ${faviconSource} → logo/favicon.svg`);
+  }
+}
+
+if (fs.existsSync(logoDir)) {
+  const hasCustomLogos = target.logoDark && target.logoLight &&
+    copyLogo(target.logoDark, 'dark.svg') &&
+    copyLogo(target.logoLight, 'light.svg');
+  if (hasCustomLogos) {
+    console.log('── logo SVGs ──────────────────────────────');
+    console.log(`  copied   ${target.logoDark} → logo/dark.svg`);
+    console.log(`  copied   ${target.logoLight} → logo/light.svg`);
+  } else {
+    const canonDark = canonical.logoDark || 'logo/tupay/dark.svg';
+    const canonLight = canonical.logoLight || 'logo/tupay/light.svg';
+    const copied = copyLogo(canonDark, 'dark.svg') && copyLogo(canonLight, 'light.svg');
+    if (copied) {
+      const patched = [];
+      for (const file of logoFiles) {
+        const p = path.join(logoDir, file);
+        let content = fs.readFileSync(p, 'utf-8');
+        const updated = patchSvgNameAndColor(content);
+        if (updated !== content) {
+          fs.writeFileSync(p, updated);
+          patched.push(`logo/${file}`);
+        }
+      }
+      if (patched.length) {
+        console.log('── logo SVGs ──────────────────────────────');
+        patched.forEach(f => console.log(`  patched  ${f}`));
       }
     }
-  }
-  if (patched.length) {
-    console.log('── logo SVGs ──────────────────────────────');
-    patched.forEach(f => console.log(`  patched  ${f}`));
   }
 }
 
