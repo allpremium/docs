@@ -11,6 +11,17 @@ Tupay sends webhooks to your configured URL when a transaction reaches a final s
 
 ---
 
+## Delivery retries
+
+If your endpoint does not return a successful response (e.g. 2xx), or the request times out, Tupay **retries** the delivery:
+
+- Retries follow a backoff schedule over a period of up to **72 hours**.
+- Return **2xx quickly** (e.g. within a few seconds) so Tupay can mark the delivery as successful and avoid unnecessary retries.
+- Process the payload asynchronously if needed: acknowledge receipt with 2xx first, then handle the event in the background.
+- After **repeated failures** (e.g. many consecutive non-2xx or timeouts), Tupay may stop retrying for that event. Ensure your endpoint is available and idempotent so duplicate deliveries are safe.
+
+---
+
 ## Webhook payload
 
 <ResponseExample>
