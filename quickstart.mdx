@@ -1,6 +1,6 @@
 ---
 title: "Quickstart"
-description: "Get up and running with Milele in less than 5 minutes."
+description: "Get up and running with Tupay in less than 5 minutes."
 ---
 
 <CardGroup cols={2}>
@@ -22,22 +22,22 @@ description: "Get up and running with Milele in less than 5 minutes."
 
 ## 1. Prerequisites
 
-- A verified Milele business account — [activate your account](https://milele.co.ke).
-- Your **API credentials** (uuid + key) from the Milele dashboard.
+- A verified Tupay business account — [activate your account](https://tupay.africa).
+- Your **API credentials** (uuid + key) from the Tupay dashboard.
 - A tool to make HTTPS requests (e.g. `curl`, Postman, or an HTTP client in your language).
 
 All requests must be made over **HTTPS** and include a valid `Authorization` header.
 See [Authorization](/prerequisites/authorization) for full details.
 
 ```
-Base URL:      https://api.milele.co.ke
+Base URL:      https://api.tupay.africa
 ```
 
 ---
 
 ## 2. Get your API key
 
-1. Sign in to the [Milele dashboard](https://milele.co.ke/dashboard).
+1. Sign in to the [Tupay dashboard](https://tupay.africa/dashboard).
 2. Navigate to **Developers / API keys**.
 3. Create a key pair and copy:
    - **Consumer UUID** — identifies your integration.
@@ -59,7 +59,7 @@ See the [Authorization](/prerequisites/authorization) guide for the token exchan
 The fastest way to confirm your integration is to retrieve your current balance.
 
 ```bash
-curl -X GET https://api.milele.co.ke/v1/core/balance \
+curl -X GET https://api.tupay.africa/v1/core/balance \
   -H "Authorization: Bearer {token}"
 ```
 
@@ -80,7 +80,7 @@ curl -X GET https://api.milele.co.ke/v1/core/balance \
 
 1. **Create a payment** with the customer details and amount.
 2. The customer receives an **STK push** (or equivalent prompt) to complete payment.
-3. **Receive a webhook** from Milele with the final status.
+3. **Receive a webhook** from Tupay with the final status.
 4. Optionally **poll the status** endpoint for an immediate update.
 
 Follow the [Accept a Payment](/payments/accept) guide for a full walkthrough.
@@ -89,7 +89,7 @@ Follow the [Accept a Payment](/payments/accept) guide for a full walkthrough.
 
 ## 5. Handle webhooks and errors
 
-Milele sends **webhooks** to your server whenever a transaction changes state.
+Tupay sends **webhooks** to your server whenever a transaction changes state.
 
 - Implement a webhook endpoint as described in [Webhooks](/webhooks).
 - Use the `status` field from [Status Codes](/status) to decide how to update your system:

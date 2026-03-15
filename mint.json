@@ -1,30 +1,30 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Milele",
+  "name": "Tupay",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg",
-    "href": "https://milele.co.ke"
+    "href": "https://tupay.africa"
   },
   "favicon": "/logo/favicon.svg",
   "colors": {
-    "primary": "#D03030",
-    "light": "#FFC1AC",
-    "dark": "#BA1833",
+    "primary": "#2C58D9",
+    "light": "#689DF0",
+    "dark": "#1238A0",
     "anchors": {
-      "from": "#D03030",
-      "to": "#BA1833"
+      "from": "#2C58D9",
+      "to": "#1238A0"
     }
   },
   "topbarLinks": [
     {
       "name": "Dashboard",
-      "url": "https://milele.co.ke/dashboard"
+      "url": "https://tupay.africa/dashboard"
     }
   ],
   "topbarCtaButton": {
     "name": "Get API Keys",
-    "url": "https://milele.co.ke/dashboard/settings"
+    "url": "https://tupay.africa/dashboard/settings"
   },
   "navigation": [
     {
@@ -73,9 +73,9 @@
     }
   ],
   "footerSocials": {
-    "website": "https://milele.co.ke",
-    "twitter": "https://x.com/mileleairtime",
-    "linkedin": "https://www.linkedin.com/company/mileleairtime"
+    "website": "https://tupay.africa",
+    "twitter": "https://x.com/tupaystyle",
+    "linkedin": "https://www.linkedin.com/company/tupaystyle"
   },
   "feedback": {
     "thumbsRating": true

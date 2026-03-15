@@ -1,9 +1,9 @@
 ---
 title: "Status Codes"
-description: "HTTP and transactional status codes returned by the Milele API."
+description: "HTTP and transactional status codes returned by the Tupay API."
 ---
 
-Milele uses two layers of status codes:
+Tupay uses two layers of status codes:
 
 - The **HTTP status code** indicates whether the request itself was valid.
 - The **`status` field** in the JSON body describes where a transaction is in its lifecycle.
@@ -42,10 +42,10 @@ Returned in the `status` field of the response body on **payments, payouts, airt
 
 | Code | Description |
 |------|-------------|
-| `0` | **Created** — Milele accepted the request but has not yet submitted it to the provider |
+| `0` | **Created** — Tupay accepted the request but has not yet submitted it to the provider |
 | `3` | **Submitted** — request forwarded to provider, awaiting response |
 | `31` | **Processing** — provider is still processing the request |
-| `100` `101` | **Retrying** — Milele is automatically retrying with the provider |
+| `100` `101` | **Retrying** — Tupay is automatically retrying with the provider |
 
 ### Failed
 
@@ -55,9 +55,9 @@ Returned in the `status` field of the response body on **payments, payouts, airt
 | `2` | **Failed** — generic failure from the provider |
 | `5` | **Invalid** — parameters accepted but provider rejected them (e.g. bad account number) |
 | `6` | **Timeout** — provider did not respond within the configured window |
-| `7` | **Insufficient funds** — your Milele balance or the customer's balance is too low |
+| `7` | **Insufficient funds** — your Tupay balance or the customer's balance is too low |
 | `8` | **Reversed** — provider reversed the transaction after an earlier success |
-| `9` | **Refunded** — you or Milele initiated a refund |
+| `9` | **Refunded** — you or Tupay initiated a refund |
 | `10` | **Forbidden** — business rules prevent this transaction |
 | `11` `120` | **Rejected** — provider explicitly rejected the transaction |
 | `13` `15` `16` `24` | **Error** — unexpected provider or internal error; treat as failed and investigate |
@@ -76,7 +76,7 @@ Returned in the `status` field of the response body on **payments, payouts, airt
     - HTTP status is `5xx`, or
     - Transactional `status` is `6` (Timeout) or an Error code (`13`, `15`, `16`, `24`).
 
-    Milele will deduplicate retries and ensure funds are not moved twice.
+    Tupay will deduplicate retries and ensure funds are not moved twice.
   </Accordion>
 
   <Accordion title="Do not retry automatically">

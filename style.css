@@ -1,16 +1,16 @@
 /* Brand color — updated by apply-brand.js at startup */
-:root { --brand-primary: #D03030; }
+:root { --brand-primary: #2C58D9; }
 
 /* Cards: faint brand-tinted background + matching border
    rgba values updated by apply-brand.js at startup */
 a:has([data-component-part="card-content-container"]) {
-  background-color: rgba(208, 48, 48, 0.06) !important;
-  border-color: rgba(208, 48, 48, 0.25) !important;
+  background-color: rgba(44, 88, 217, 0.06) !important;
+  border-color: rgba(44, 88, 217, 0.25) !important;
 }
 
 /* Dark mode */
 .dark a:has([data-component-part="card-content-container"]) {
-  background-color: rgba(208, 48, 48, 0.12) !important;
+  background-color: rgba(44, 88, 217, 0.12) !important;
 }
 
 /* Hide only the "Powered by Mintlify" link */
