@@ -1,0 +1,27 @@
+---
+title: "API versioning"
+description: "How Tupay versions the API and handles deprecations."
+---
+
+The Tupay API uses **URL versioning**. The base URL includes the version (e.g. `https://api.tupay.africa/v1`). All endpoints live under that path.
+
+---
+
+## Current version
+
+- **v1** — current stable version. Use `https://api.tupay.africa/v1` as the base for all requests.
+
+---
+
+## When we release a new version
+
+- New features and breaking changes are released under a new version path (e.g. `/v2`).
+- The previous version remains available for a **support period** (e.g. at least 12 months). Exact duration is announced when a new version is released.
+- Deprecation is communicated via the [dashboard](https://tupay.africa/dashboard), email to API key holders, and optional deprecation headers on responses.
+- After the support period ends, deprecated versions may be retired; you should migrate to the new version before that date.
+
+---
+
+## Best practice
+
+Pin your integration to a specific version in the base URL (e.g. `/v1`) and upgrade to a newer version only when you are ready to adopt any breaking or behavioural changes documented in the release notes.

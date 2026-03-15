@@ -1,4 +1,4 @@
----
+g---
 title: "Idempotency"
 description: "Safely retry requests without accidentally performing the same operation twice."
 ---
@@ -9,7 +9,19 @@ The Tupay API supports [idempotency](https://en.wikipedia.org/wiki/Idempotence) 
 
 ## How it works
 
-Include a unique `idempotencyKey` field in the **request body** of any POST request. The server uses it to detect and suppress duplicate requests.
+Send a unique idempotency key with any POST request so the server can detect and suppress duplicate requests. **Prefer the `Idempotency-Key` HTTP header**; the API also accepts `idempotencyKey` in the request body.
+
+**Using the header (recommended):**
+
+```bash
+curl -X POST https://api.tupay.africa/v1/... \
+  -H "Authorization: Bearer {token}" \
+  -H "Idempotency-Key: f47ac10b-58cc-4372-a567-0e02b2c3d479" \
+  -H "Content-Type: application/json" \
+  -d '{"account":"0733000000","amount":10,"currency":"KES"}'
+```
+
+**Using the request body:** you can instead include `idempotencyKey` in the JSON:
 
 ```json
 {

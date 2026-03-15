@@ -35,6 +35,7 @@
           "prerequisites/authorization",
           "prerequisites/idempotency",
           "prerequisites/rate-limiting",
+          "prerequisites/versioning",
           "webhooks",
           "status"
         ]
