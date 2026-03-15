@@ -5,6 +5,10 @@ description: "Check the current status of a transaction."
 
 **GET** `/v1/status/{id}`
 
+<Info>
+  For high-frequency or real-time updates, prefer [webhooks](/webhooks) instead of polling this endpoint. Webhooks push status changes as they happen and avoid rate limits and unnecessary requests.
+</Info>
+
 <RequestExample>
 ```bash cURL
 curl -X GET https://api.tupay.africa/v1/status/ABCDEFG250101 \

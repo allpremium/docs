@@ -3,7 +3,7 @@ title: "Rate limiting"
 description: "How rate limits work and which response headers to use for backoff and retries."
 ---
 
-Selected API endpoints are rate-limited per client IP (and per phone number for payment creation) to protect against abuse. Two **tiers** apply different limits: a higher limit for general use (airtime, bills, messages, balance/status) and a lower limit for pay/payouts. When you hit a limit, the API returns **HTTP 429 Too Many Requests** and tells you when you can retry.
+API endpoints are rate-limited per client IP (and per phone number for payment creation) to protect against abuse. Two **tiers** apply different limits: a higher limit for general use (airtime, bills, messages, balance/status) and a lower limit for pay/payouts. When you hit a limit, the API returns **HTTP 429 Too Many Requests** and tells you when you can retry.
 
 ---
 
