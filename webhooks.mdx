@@ -1,0 +1,97 @@
+---
+title: "Webhooks"
+description: "Receive real-time transaction status updates via HTTP webhooks."
+---
+
+Tupay sends webhooks to your configured URL when a transaction reaches a final state. Set your webhook URL in [Settings](https://tupay.africa/dashboard/settings).
+
+<Info>
+  Your webhook endpoint must return `HTTP 200` to acknowledge receipt. Tupay will retry failed deliveries automatically.
+</Info>
+
+---
+
+## Webhook payload
+
+<ResponseExample>
+```json Webhook body
+{
+  "id":        "ABCDEFG250101",
+  "reference": "ref1234",
+  "status":    20,
+  "message":   "Success",
+  "balance":   100,
+  "currency":  "KES",
+  "comm":      5
+}
+```
+</ResponseExample>
+
+<ResponseField name="id" type="string">
+  Tupay transaction ID.
+</ResponseField>
+
+<ResponseField name="reference" type="string">
+  Your internal reference.
+</ResponseField>
+
+<ResponseField name="status" type="number">
+  Transactional status code. See [Status Codes](/status).
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status description.
+</ResponseField>
+
+<ResponseField name="currency" type="string">
+  Currency code (e.g. `KES`).
+</ResponseField>
+
+<ResponseField name="balance" type="number">
+  Your account balance after the transaction.
+</ResponseField>
+
+<ResponseField name="comm" type="number">
+  Commission earned on the transaction (optional).
+</ResponseField>
+
+<ResponseField name="identity" type="object">
+  Identity verification result — only present on [Identity](/payments/identity) requests.
+</ResponseField>
+
+---
+
+## Verifying webhooks
+
+Webhooks are sent as HTTP `POST` requests to your configured URL. Your endpoint should return `HTTP 200` to acknowledge receipt. Tupay retries failed deliveries automatically.
+
+### Signature verification
+
+When your business has a **signing secret** (the same secret you receive by email at API key approval, used to sign API requests), Tupay includes an **`X-Webhook-Signature`** header on each webhook so you can verify the request came from Tupay and was not tampered with.
+
+**Obtaining the secret**
+
+- The signing secret is emailed once when your API key is approved. It is the same secret used for [request signing](/api#signing-requests) and for verifying webhooks.
+- If you no longer have it, generate a new API key and complete approval to receive a new secret.
+
+**Verifying the signature**
+
+1. Read the raw request body (as received, before parsing JSON).
+2. Compute `expected = HMAC-SHA256(your_signing_secret, raw_body)` and encode the result as hex.
+3. Read the `X-Webhook-Signature` header. The value has the form `sha256=<hex>`.
+4. Compare the `<hex>` part with your `expected` using a **constant-time comparison** (e.g. not a simple string equality that can leak timing). If they match, the webhook is authentic.
+
+**Example (Node.js)**
+
+```js
+const crypto = require('crypto');
+
+function verifyWebhookSignature(rawBody, signatureHeader, signingSecret) {
+  if (!signatureHeader || !signatureHeader.startsWith('sha256=')) return false;
+  const expected = crypto.createHmac('sha256', signingSecret).update(rawBody).digest('hex');
+  const received = signatureHeader.slice(7); // after "sha256="
+  return crypto.timingSafeEqual(Buffer.from(expected, 'hex'), Buffer.from(received, 'hex'));
+}
+```
+
+If your business does not yet have a signing secret in credentials (e.g. API key not approved with the new flow), webhooks are sent without this header. You can still verify by source IP if needed.
