@@ -88,3 +88,42 @@ Returned in the `status` field of the response body on **payments, payouts, airt
     In these cases, show the error to the user or correct the request before retrying.
   </Accordion>
 </AccordionGroup>
+
+When retrying after `5xx` or `429`, use **exponential backoff** (e.g. wait 1s, then 2s, then 4s) and respect the `Retry-After` header on 429. See [Rate limiting](/prerequisites/rate-limiting) for details.
+
+---
+
+## Error responses
+
+When a request fails, the body may use one of these shapes:
+
+**Simple error string:** many endpoints return a JSON object with an `error` field:
+
+```json
+{ "error": "Too many requests" }
+```
+
+**Structured response:** some endpoints include a `status` and a human-readable field such as `message` from third party providers:
+
+```json
+{ "status": 400, "message": "missing_params" }
+```
+
+**Target shape (for new and updated endpoints):** a consistent error object may include `type`, `code`, `message`, and `request_id` to support machine-readable handling and support lookup:
+
+```json
+{
+  "error": {
+    "type": "invalid_request_error",
+    "code": "missing_params",
+    "message": "Your request is invalid.",
+    "request_id": "req_abc123"
+  }
+}
+```
+
+Use the HTTP status code to detect failure; parse `error` or `message` (and optional `status`/`code`) to show or log a reason. When contacting support, include the `X-Request-Id` response header if present (see [Request ID for support](#request-id-for-support) below).
+
+### Request ID for support
+
+Every API response includes an **`X-Request-Id`** header with a unique value for that request. If you contact Tupay support about an error or unexpected behaviour, include this value so we can look up the request in our logs.
