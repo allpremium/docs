@@ -52,6 +52,7 @@
         "pages": [
           "payments/accept",
           "payments/payouts",
+          "payments/payouts-status",
           "payments/identity"
         ]
       },
@@ -64,14 +65,16 @@
       {
         "group": "Airtime",
         "pages": [
-          "airtime/order"
+          "airtime/order",
+          "airtime/status"
         ]
       },
       {
         "group": "Bills",
         "pages": [
           "bills/bill",
-          "bills/order"
+          "bills/order",
+          "bills/status"
         ]
       }
     ],

@@ -1,9 +1,9 @@
 ---
-title: "Payouts"
+title: "Create a payout"
 description: "Send funds to a mobile money account, bank account, or stablecoin wallet."
 ---
 
-The request first checks that your account has sufficient balance. If successful, an order is placed and the response confirms the request is in progress. A [webhook URL](/webhooks) is required to receive the final status; you can also poll the [status](/status) endpoint.
+Checks that your account has sufficient balance, then places an order. A [webhook](/webhooks) delivers the final status; you can also [retrieve the payout](/payments/payouts-status).
 
 **POST** `/v1/payouts`
 
@@ -11,7 +11,7 @@ The request first checks that your account has sufficient balance. If successful
 
 ## Services
 
-Pass the service name in the `service` field of the request body.
+Pass the service name in the `service` field.
 
 | Service | Description |
 |---------|-------------|
@@ -126,7 +126,7 @@ curl -X POST https://api.tupay.africa/v1/payouts \
 </ParamField>
 
 <ParamField body="idempotencyKey" type="string">
-  Unique UUID per request — prevents duplicate payouts on retry. A retry with the same key returns the original result instead of sending a new payout.
+  Unique UUID per request — prevents duplicate payouts on retry.
 </ParamField>
 
 <ParamField body="name" type="string">

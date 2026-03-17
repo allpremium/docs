@@ -1,17 +1,17 @@
 ---
-title: "Order Airtime"
+title: "Send airtime"
 description: "Top up a mobile number with airtime."
 ---
 
-The request first checks that your account has sufficient balance. If successful, an order is placed. A [webhook URL](/webhooks) is required to receive the final status; you can also poll the [status](/status) endpoint.
+Checks that your account has sufficient balance, then places an order. A [webhook](/webhooks) delivers the final status; you can also [retrieve the airtime order](/airtime/status).
 
-**POST** `/v1/airtime/order`
+**POST** `/v1/airtime`
 
 ---
 
 ## Services
 
-Pass the service name in the `service` field of the request body. If omitted, the service is auto-detected from the `account` number prefix.
+Pass the service name in the `service` field. If omitted, the service is auto-detected from the `account` number prefix.
 
 | Service | Description |
 |---------|-------------|
@@ -27,7 +27,7 @@ Pass the service name in the `service` field of the request body. If omitted, th
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.tupay.africa/v1/airtime/order\
+curl -X POST https://api.tupay.africa/v1/airtime \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer {token}' \
   -d '{
@@ -45,7 +45,7 @@ curl -X POST https://api.tupay.africa/v1/airtime/order\
 </RequestExample>
 
 <ParamField body="service" type="string">
-  Airtime service identifier — see [Services](#services) above. If omitted, the service is auto-detected from the `account` number prefix.
+  Airtime service identifier — see [Services](#services) above. Auto-detected if omitted.
 </ParamField>
 
 <ParamField body="account" type="string" required>

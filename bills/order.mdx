@@ -1,17 +1,17 @@
 ---
-title: "Pay a Bill"
+title: "Pay a bill"
 description: "Pay a subscription bill for DStv, GOtv, Zuku, or StarTimes."
 ---
 
-The request first checks that your account has sufficient balance. If successful, an order is placed. A [webhook URL](/webhooks) is required to receive the final status; you can also poll the [status](/status) endpoint.
+Checks that your account has sufficient balance, then places an order. A [webhook](/webhooks) delivers the final status; you can also [retrieve the bill payment](/bills/status).
 
-**POST** `/v1/bills/order`
+**POST** `/v1/bills`
 
 ---
 
 ## Services
 
-Pass the service name in the `service` field of the request body.
+Pass the service name in the `service` field.
 
 | Service | Description |
 |---------|-------------|
@@ -26,7 +26,7 @@ Pass the service name in the `service` field of the request body.
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.tupay.africa/v1/bills/order \
+curl -X POST https://api.tupay.africa/v1/bills \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer {token}' \
   -d '{
