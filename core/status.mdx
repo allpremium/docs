@@ -1,12 +1,20 @@
 ---
-title: "Status"
-description: "Check the current status of a transaction."
+title: "Retrieve a transaction"
+description: "Check the current status of any transaction."
 ---
 
 **GET** `/v1/status/{id}`
 
+Returns the current status of any transaction regardless of type. You can also use the resource-scoped endpoints which return the same response:
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /v1/airtime/{id}` | [Retrieve an airtime order](/airtime/order#retrieve-an-airtime-order) |
+| `GET /v1/bills/{id}` | [Retrieve a bill payment](/bills/order#retrieve-a-bill-payment) |
+| `GET /v1/payouts/{id}` | [Retrieve a payout](/payments/payouts#retrieve-a-payout) |
+
 <Info>
-  For high-frequency or real-time updates, prefer [webhooks](/webhooks) instead of polling this endpoint. Webhooks push status changes as they happen and avoid rate limits and unnecessary requests.
+  For real-time updates, prefer [webhooks](/webhooks) instead of polling.
 </Info>
 
 <RequestExample>
