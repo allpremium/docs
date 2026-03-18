@@ -73,6 +73,15 @@
         "bills/order",
         "bills/status"
       ]
+    },
+    {
+      "group": "Finance",
+      "pages": [
+        "finance/wallets",
+        "finance/cashflow",
+        "finance/rules",
+        "finance/approvals"
+      ]
     }
   ],
   "footerSocials": {

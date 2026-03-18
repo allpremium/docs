@@ -1,0 +1,106 @@
+---
+title: "Cashflow"
+description: "Track inflows and outflows, and view daily net position by month."
+---
+
+Cashflow entries record every money movement — collections, disbursements, fees, and adjustments. The daily summary gives you the net position (inflow − outflow) for each day of a given month.
+
+---
+
+## Recent cashflow
+
+**GET** `/v1/finance/cashflow`
+
+Returns the most recent cashflow entries for your business, ordered newest-first.
+
+<RequestExample>
+```bash cURL
+curl -X GET 'https://api.tupay.africa/v1/finance/cashflow?limit=20' \
+  -H 'Authorization: Bearer {token}'
+```
+</RequestExample>
+
+<ParamField query="limit" type="number">
+  Maximum number of entries to return. Defaults to `50`.
+</ParamField>
+
+<ResponseExample>
+```json Response
+{
+  "status": 20,
+  "data": [
+    {
+      "flowId":      "c1d2e3f4-...",
+      "direction":   "IN",
+      "category":    "COLLECTION",
+      "amount":      5000.00,
+      "currency":    "KES",
+      "reference":   "MPE1234567890",
+      "description": "M-Pesa payment from 0712345678",
+      "accountId":   "e5f6g7h8-...",
+      "year":        2025,
+      "month":       2,
+      "day":         28,
+      "createTime":  1709200000000
+    }
+  ]
+}
+```
+</ResponseExample>
+
+<ResponseField name="data[].direction" type="string">`IN` for inflows (collections), `OUT` for outflows (disbursements, fees).</ResponseField>
+<ResponseField name="data[].category" type="string">Flow type — e.g. `COLLECTION`, `PAYOUT`, `FEE`, `ADJUSTMENT`.</ResponseField>
+<ResponseField name="data[].reference" type="string">External transaction reference (e.g. M-Pesa transaction code).</ResponseField>
+<ResponseField name="data[].accountId" type="string">UUID of the wallet this flow is associated with.</ResponseField>
+
+---
+
+## Daily cashflow summary
+
+**GET** `/v1/finance/cashflow/daily`
+
+Returns the daily aggregated cashflow for a given month — total inflow, total outflow, and net position per day.
+
+<RequestExample>
+```bash cURL
+curl -X GET 'https://api.tupay.africa/v1/finance/cashflow/daily?year=2025&month=2' \
+  -H 'Authorization: Bearer {token}'
+```
+</RequestExample>
+
+<ParamField query="year" type="number">
+  4-digit year. Defaults to the current year.
+</ParamField>
+
+<ParamField query="month" type="number">
+  Month number (1–12). Defaults to the current month.
+</ParamField>
+
+<ResponseExample>
+```json Response
+{
+  "status": 20,
+  "data": [
+    {
+      "day":      28,
+      "inflow":   125000.00,
+      "outflow":  80000.00,
+      "net":      45000.00,
+      "currency": "KES"
+    },
+    {
+      "day":      27,
+      "inflow":   98000.00,
+      "outflow":  61000.00,
+      "net":      37000.00,
+      "currency": "KES"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+<ResponseField name="data[].day" type="number">Day of month (1–31).</ResponseField>
+<ResponseField name="data[].inflow" type="number">Total money received on this day.</ResponseField>
+<ResponseField name="data[].outflow" type="number">Total money sent on this day.</ResponseField>
+<ResponseField name="data[].net" type="number">`inflow − outflow`. Positive = net receipt, negative = net disbursement.</ResponseField>

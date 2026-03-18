@@ -1,0 +1,191 @@
+---
+title: "Approvals"
+description: "Create and manage approval requests for payments, transfers, and other actions."
+---
+
+The approvals workflow lets your team flag high-value or sensitive operations for sign-off before execution. Any team member can raise a request; only users with the required [role](/finance/rules#assign-a-role) can approve or reject it.
+
+**Status codes**
+
+| Value | Meaning |
+|-------|---------|
+| `0` | Pending |
+| `1` | Approved |
+| `2` | Rejected |
+| `3` | Expired |
+
+---
+
+## List approvals
+
+**GET** `/v1/approvals`
+
+Returns approval requests for your business. Filter by status to show only pending items.
+
+<RequestExample>
+```bash cURL
+# All approvals
+curl -X GET https://api.tupay.africa/v1/approvals \
+  -H 'Authorization: Bearer {token}'
+
+# Pending only
+curl -X GET 'https://api.tupay.africa/v1/approvals?status=0' \
+  -H 'Authorization: Bearer {token}'
+```
+</RequestExample>
+
+<ParamField query="status" type="number">
+  Filter by status — `0` (pending), `1` (approved), `2` (rejected), `3` (expired). Omit to return all.
+</ParamField>
+
+<ResponseExample>
+```json Response
+{
+  "status": 20,
+  "data": [
+    {
+      "approvalId":   "a1b2c3d4-...",
+      "entityType":   "PAYOUT",
+      "entityId":     "TXN-REF-001",
+      "amount":       150000.00,
+      "currency":     "KES",
+      "description":  "Supplier payment — ABC Ltd",
+      "requestedBy":  "user-id-here",
+      "roleRequired": "FINANCE",
+      "status":       0,
+      "createTime":   1709200000000
+    }
+  ]
+}
+```
+</ResponseExample>
+
+<ResponseField name="data[].approvalId" type="string">Approval UUID — use this in approve/reject calls.</ResponseField>
+<ResponseField name="data[].entityType" type="string">What is being approved (e.g. `PAYOUT`, `TRANSFER`, `BULK`).</ResponseField>
+<ResponseField name="data[].entityId" type="string">Your internal reference for the entity awaiting approval.</ResponseField>
+<ResponseField name="data[].roleRequired" type="string">Minimum role needed to approve this request.</ResponseField>
+<ResponseField name="data[].status" type="number">See status codes above.</ResponseField>
+
+---
+
+## Create an approval request
+
+**POST** `/v1/approvals`
+
+Raises a new approval request. Typically called before executing a high-value operation.
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.tupay.africa/v1/approvals \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer {token}' \
+  -d '{
+    "mode":      "PAYOUT",
+    "reference": "TXN-REF-001",
+    "a":         150000,
+    "currency":  "KES",
+    "name":      "Supplier payment — ABC Ltd",
+    "s":         "FINANCE"
+  }'
+```
+</RequestExample>
+
+<ParamField body="mode" type="string" required>
+  Entity type being approved (e.g. `PAYOUT`, `TRANSFER`, `BULK`).
+</ParamField>
+
+<ParamField body="reference" type="string" required>
+  Your internal reference for the entity (e.g. a transaction ID or order number).
+</ParamField>
+
+<ParamField body="a" type="number">
+  Amount involved. Used for display and rule evaluation.
+</ParamField>
+
+<ParamField body="currency" type="string">
+  Currency code. Defaults to `KES`.
+</ParamField>
+
+<ParamField body="name" type="string">
+  Human-readable description shown to approvers.
+</ParamField>
+
+<ParamField body="s" type="string">
+  Role required to approve — `ADMIN`, `FINANCE`, or `OPERATOR`. Defaults to `FINANCE`.
+</ParamField>
+
+<ResponseExample>
+```json Response
+{
+  "status":       20,
+  "approvalId":   "a1b2c3d4-...",
+  "entityType":   "PAYOUT",
+  "entityId":     "TXN-REF-001",
+  "amount":       150000.00,
+  "currency":     "KES",
+  "roleRequired": "FINANCE",
+  "status":       0,
+  "createTime":   1709200000000
+}
+```
+</ResponseExample>
+
+---
+
+## Approve a request
+
+**POST** `/v1/approvals/{approvalId}/approve`
+
+Marks the request as approved. The calling user must have the role specified in `roleRequired` (or `ADMIN`).
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.tupay.africa/v1/approvals/a1b2c3d4-.../approve \
+  -H 'Authorization: Bearer {token}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status":     20,
+  "approvalId": "a1b2c3d4-...",
+  "status":     1,
+  "approvedBy": "approver-user-id",
+  "approvedAt": 1709203600000
+}
+```
+</ResponseExample>
+
+---
+
+## Reject a request
+
+**POST** `/v1/approvals/{approvalId}/reject`
+
+Marks the request as rejected. Same role requirement as approve.
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.tupay.africa/v1/approvals/a1b2c3d4-.../reject \
+  -H 'Authorization: Bearer {token}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status":     20,
+  "approvalId": "a1b2c3d4-...",
+  "status":     2,
+  "approvedBy": "approver-user-id",
+  "approvedAt": 1709203600000
+}
+```
+</ResponseExample>
+
+| HTTP | Reason |
+|------|--------|
+| `403` | Calling user does not have the required role |
+| `404` | Approval not found |
+| `409` | Request is no longer pending (already approved, rejected, or expired) |

@@ -1,0 +1,147 @@
+---
+title: "Rules & Roles"
+description: "Configure approval rules and assign roles to team members."
+---
+
+Rules define conditions that trigger approval requirements (e.g. "flag any payout above KES 100,000"). Roles control which team members can approve or reject those requests.
+
+---
+
+## List rules
+
+**GET** `/v1/finance/rules`
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.tupay.africa/v1/finance/rules \
+  -H 'Authorization: Bearer {token}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status": 20,
+  "data": [
+    {
+      "ruleId":     "r1s2t3u4-...",
+      "name":       "Large payout flag",
+      "ruleType":   "PAYOUT_LIMIT",
+      "condition":  "{\"amount_gt\": 100000}",
+      "action":     "{\"require_approval\": true, \"role\": \"FINANCE\"}",
+      "status":     1,
+      "createTime": 1709200000000
+    }
+  ]
+}
+```
+</ResponseExample>
+
+<ResponseField name="data[].ruleId" type="string">Rule UUID — use this for DELETE.</ResponseField>
+<ResponseField name="data[].ruleType" type="string">Rule category (e.g. `PAYOUT_LIMIT`, `BALANCE_ALERT`).</ResponseField>
+<ResponseField name="data[].condition" type="string">JSON string — the trigger condition.</ResponseField>
+<ResponseField name="data[].action" type="string">JSON string — what happens when the condition is met.</ResponseField>
+<ResponseField name="data[].status" type="number">`1` = active, `0` = inactive.</ResponseField>
+
+---
+
+## Create a rule
+
+**POST** `/v1/finance/rules`
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.tupay.africa/v1/finance/rules \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer {token}' \
+  -d '{
+    "name": "Large payout flag",
+    "mode": "PAYOUT_LIMIT",
+    "c":    "{\"amount_gt\": 100000}",
+    "d":    "{\"require_approval\": true, \"role\": \"FINANCE\"}"
+  }'
+```
+</RequestExample>
+
+<ParamField body="name" type="string" required>
+  Human-readable label for this rule.
+</ParamField>
+
+<ParamField body="mode" type="string" required>
+  Rule type — determines how the rule is evaluated (e.g. `PAYOUT_LIMIT`, `BALANCE_ALERT`).
+</ParamField>
+
+<ParamField body="c" type="string" required>
+  Condition as a JSON string. Structure depends on the rule type.
+</ParamField>
+
+<ParamField body="d" type="string" required>
+  Action as a JSON string. Structure depends on the rule type.
+</ParamField>
+
+---
+
+## Delete a rule
+
+**DELETE** `/v1/finance/rules/{ruleId}`
+
+<RequestExample>
+```bash cURL
+curl -X DELETE https://api.tupay.africa/v1/finance/rules/r1s2t3u4-... \
+  -H 'Authorization: Bearer {token}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status": 20,
+  "msg":    "deleted"
+}
+```
+</ResponseExample>
+
+---
+
+## Assign a role
+
+**POST** `/v1/finance/roles`
+
+Assigns a finance role to a team member. Roles are used to enforce who can approve or reject pending approval requests.
+
+| Role | Permissions |
+|------|-------------|
+| `ADMIN` | Approve / reject any request |
+| `FINANCE` | Approve / reject requests requiring `FINANCE` or lower |
+| `OPERATOR` | View only — cannot approve |
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.tupay.africa/v1/finance/roles \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer {token}' \
+  -d '{
+    "u":    "user-id-here",
+    "mode": "FINANCE"
+  }'
+```
+</RequestExample>
+
+<ParamField body="u" type="string" required>
+  User ID of the team member to assign the role to.
+</ParamField>
+
+<ParamField body="mode" type="string" required>
+  Role to assign: `ADMIN`, `FINANCE`, or `OPERATOR`.
+</ParamField>
+
+<ResponseExample>
+```json Response
+{
+  "status":     20,
+  "userId":     "user-id-here",
+  "role":       "FINANCE",
+  "updateTime": 1709200000000
+}
+```
+</ResponseExample>

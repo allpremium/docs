@@ -1,0 +1,160 @@
+---
+title: "Wallets"
+description: "Manage your business wallets — M-Pesa paybills, bank accounts, and float balances."
+---
+
+Wallets represent the external accounts your business uses to send and receive money (M-Pesa paybills, bank accounts). Use these endpoints to register accounts, read current balances, and pull historical balance snapshots for charting.
+
+---
+
+## List wallets
+
+**GET** `/v1/finance/wallets`
+
+Returns all wallets registered for your business.
+
+<RequestExample>
+```bash cURL
+curl -X GET https://api.tupay.africa/v1/finance/wallets \
+  -H 'Authorization: Bearer {token}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "status": 20,
+  "data": [
+    {
+      "id": "a1b2c3d4-...",
+      "accountId": "e5f6g7h8-...",
+      "accountType": "MPESA",
+      "accountName": "Main Paybill",
+      "accountRef": "123456",
+      "currency": "KES",
+      "balance": 48500.00,
+      "source": "CALLBACK",
+      "updateTime": 1709200000000
+    }
+  ]
+}
+```
+</ResponseExample>
+
+<ResponseField name="status" type="number">See [Status Codes](/status).</ResponseField>
+<ResponseField name="data" type="array">List of wallet objects.</ResponseField>
+<ResponseField name="data[].accountId" type="string">Unique wallet ID (UUID). Use this as `account_id` in the history endpoint.</ResponseField>
+<ResponseField name="data[].accountType" type="string">`MPESA` or `BANK`.</ResponseField>
+<ResponseField name="data[].accountRef" type="string">The paybill number, till number, or bank account number.</ResponseField>
+<ResponseField name="data[].balance" type="number">Latest known balance.</ResponseField>
+<ResponseField name="data[].source" type="string">`CALLBACK` — updated automatically from M-Pesa payment callbacks. `MANUAL` — set manually via POST.</ResponseField>
+
+---
+
+## Register a wallet
+
+**POST** `/v1/finance/wallets`
+
+Registers a new wallet. For M-Pesa paybills, the balance is updated automatically on every incoming payment — no polling required.
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.tupay.africa/v1/finance/wallets \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer {token}' \
+  -d '{
+    "name":      "Main Paybill",
+    "reference": "123456",
+    "mode":      "MPESA",
+    "currency":  "KES",
+    "a":         48500
+  }'
+```
+</RequestExample>
+
+<ParamField body="name" type="string" required>
+  Display name for this wallet (e.g. "Main Paybill", "NCBA Business Account").
+</ParamField>
+
+<ParamField body="reference" type="string" required>
+  The account identifier — paybill number, till number, or bank account number.
+</ParamField>
+
+<ParamField body="mode" type="string">
+  Wallet type: `MPESA` or `BANK`. Defaults to `BANK`.
+</ParamField>
+
+<ParamField body="currency" type="string">
+  Currency code. Defaults to `KES`.
+</ParamField>
+
+<ParamField body="a" type="number">
+  Initial balance. Defaults to `0`.
+</ParamField>
+
+<ResponseExample>
+```json Response
+{
+  "status":      20,
+  "accountId":   "e5f6g7h8-...",
+  "accountType": "MPESA",
+  "accountName": "Main Paybill",
+  "accountRef":  "123456",
+  "currency":    "KES",
+  "balance":     48500.00
+}
+```
+</ResponseExample>
+
+---
+
+## Wallet balance history
+
+**GET** `/v1/finance/wallets/history`
+
+Returns hourly balance snapshots for a single wallet. Useful for drawing balance-over-time charts. Defaults to the last 30 days if no range is supplied.
+
+<RequestExample>
+```bash cURL
+curl -X GET 'https://api.tupay.africa/v1/finance/wallets/history?account_id=e5f6g7h8-...&start=1709200000000&end=1709286400000' \
+  -H 'Authorization: Bearer {token}'
+```
+</RequestExample>
+
+<ParamField query="account_id" type="string" required>
+  UUID of the wallet (from `accountId` in the list response).
+</ParamField>
+
+<ParamField query="start" type="number">
+  Range start — Unix timestamp in **milliseconds**.
+</ParamField>
+
+<ParamField query="end" type="number">
+  Range end — Unix timestamp in **milliseconds**.
+</ParamField>
+
+<ResponseExample>
+```json Response
+{
+  "status": 20,
+  "data": [
+    {
+      "year": 2025, "month": 2, "day": 28, "hour": 14,
+      "balance": 48500.00, "currency": "KES"
+    },
+    {
+      "year": 2025, "month": 2, "day": 28, "hour": 13,
+      "balance": 47200.00, "currency": "KES"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+<ResponseField name="data" type="array">
+  Snapshots ordered newest-first. One entry per hour. Use the last entry per day/month/year for coarser granularities.
+</ResponseField>
+
+<Tip>
+  M-Pesa wallet balances are captured automatically from the `OrgAccountBalance` field in every C2B payment callback — you do not need to poll or set them manually.
+</Tip>
