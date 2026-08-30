@@ -1,4 +1,4 @@
-g---
+---
 title: "Idempotency"
 description: "Safely retry requests without accidentally performing the same operation twice."
 ---
@@ -60,7 +60,7 @@ Keys are retained for **24 hours**. After that, the same key may be reused for a
 ## Rules
 
 | Rule | Detail |
-|------|--------|
+| --- | --- |
 | Scope | POST requests only — GET requests are inherently idempotent |
 | Format | Any unique string up to 255 characters; V4 UUID recommended |
 | Mismatch | Sending the same key with a different payload returns an error |
